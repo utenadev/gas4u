@@ -1,0 +1,59 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+.env
+coverage/
+.vscode/
+t/
+AGENTS.md
+GEMINI.md
+QWEN.md
+.cache
+.qoder
+.qwen
+# YAML configuration files (but keep programs data)
+abm_check.yaml
+!programs*.yaml
+output/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
