@@ -21,7 +21,7 @@
 ## フェーズ 3: コアロジック実装
 - [x] Gemini API クライアントの実装 (`lib/gemini`)
 - [x] ローカルストレージラッパーの実装 (`lib/storage`)
-- [ ] Clasp 互換ロジックの実装 (`lib/clasp`)
+- [x] Clasp 互換ロジックの実装 (`lib/clasp`)
 - [ ] Background Service Worker の実装
 
 ## フェーズ 4: 統合と検証
