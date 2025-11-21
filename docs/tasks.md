@@ -22,7 +22,7 @@
 - [x] Gemini API クライアントの実装 (`lib/gemini`)
 - [x] ローカルストレージラッパーの実装 (`lib/storage`)
 - [x] Clasp 互換ロジックの実装 (`lib/clasp`)
-- [ ] Background Service Worker の実装
+- [x] Background Service Worker の実装
 
 ## フェーズ 4: 統合と検証
 - [ ] AI コード生成フローの統合
