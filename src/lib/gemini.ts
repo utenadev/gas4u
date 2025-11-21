@@ -6,14 +6,27 @@ export class GeminiClient {
 
     constructor(apiKey: string) {
         this.genAI = new GoogleGenerativeAI(apiKey);
-        this.model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
+        this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     }
 
     async generateCode(prompt: string): Promise<string> {
+        const systemPrompt = `You are a Google Apps Script code generator. 
+Generate ONLY the requested Google Apps Script code without any explanations, comments, or markdown formatting.
+Do not include \`\`\`javascript or any other markdown code blocks.
+Return only the pure JavaScript/Google Apps Script code.
+
+User request: ${prompt}`;
+
         try {
-            const result = await this.model.generateContent(prompt);
+            const result = await this.model.generateContent(systemPrompt);
             const response = await result.response;
-            return response.text();
+            let code = response.text();
+
+            // Remove markdown code blocks if present
+            code = code.replace(/```(?:javascript|js|typescript|ts)?\n?/g, '');
+            code = code.replace(/```\n?$/g, '');
+
+            return code.trim();
         } catch (error) {
             console.error('Error generating code:', error);
             throw error;
