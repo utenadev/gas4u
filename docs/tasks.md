@@ -13,14 +13,14 @@
 
 ## フェーズ 2: UI 実装とプレビュー環境
 - [x] 共通コンポーネントの作成 (Button, Input, Layout)
-- [ ] Popup 画面の実装 (プロジェクト一覧表示)
-- [ ] Editor 画面の実装 (Monaco Editor 導入)
+- [x] Popup 画面の実装 (プロジェクト一覧表示)
+- [x] Editor 画面の実装 (Monaco Editor 導入)
 - [x] Web プレビュー環境の構築 (Chrome API モック作成)
-- [ ] ルーティング設定 (Webプレビュー用)
+- [x] ルーティング設定 (Webプレビュー用)
 
 ## フェーズ 3: コアロジック実装
-- [ ] Gemini API クライアントの実装 (`lib/gemini`)
-- [ ] ローカルストレージラッパーの実装 (`lib/storage`)
+- [x] Gemini API クライアントの実装 (`lib/gemini`)
+- [x] ローカルストレージラッパーの実装 (`lib/storage`)
 - [ ] Clasp 互換ロジックの実装 (`lib/clasp`)
 - [ ] Background Service Worker の実装
 
