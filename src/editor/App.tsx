@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CodeEditor } from '../components/CodeEditor';
 import { DiffViewer } from '../components/DiffViewer';
 import { GeminiClient } from '../lib/gemini';
 import { storage, StorageKey } from '../lib/storage';
 import { SettingsModal } from '../components/SettingsModal';
+
 
 interface FileNode {
     id: string;
@@ -44,17 +45,123 @@ const MOCK_FILES: FileNode[] = [
 ];
 
 const App: React.FC = () => {
-    const [files, setFiles] = useState<FileNode[]>(MOCK_FILES);
-    const [selectedFileId, setSelectedFileId] = useState<string | null>('1');
-    const [fileContent, setFileContent] = useState<string>(MOCK_FILES[0].content || '');
+    const [files, setFiles] = useState<FileNode[]>([]);
+    const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+    const [fileContent, setFileContent] = useState<string>('');
     const [showAiPrompt, setShowAiPrompt] = useState<boolean>(false);
     const [aiPrompt, setAiPrompt] = useState<string>('');
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const [diffMode, setDiffMode] = useState<boolean>(false);
     const [modifiedContent, setModifiedContent] = useState<string>('');
 
     const [showSettings, setShowSettings] = useState<boolean>(false);
+    const [projectId, setProjectId] = useState<string | null>(null);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const pid = params.get('projectId');
+        setProjectId(pid);
+
+        if (pid) {
+            loadProjectContent(pid);
+        } else {
+            // Fallback to mock if no projectId (e.g. direct dev server access)
+            setFiles(MOCK_FILES);
+            setSelectedFileId('1');
+            setFileContent(MOCK_FILES[0].content || '');
+            setIsLoading(false);
+        }
+    }, []);
+
+    const loadProjectContent = async (id: string) => {
+        setIsLoading(true);
+        try {
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+                const response = await chrome.runtime.sendMessage({
+                    type: 'GET_PROJECT_CONTENT',
+                    scriptId: id
+                });
+
+                if (response.error) {
+                    alert(`Failed to load project: ${response.error}`);
+                    return;
+                }
+
+                if (response.files) {
+                    const nodes: FileNode[] = response.files.map((f: any, index: number) => {
+                        const fileName = f.name;
+                        let nameWithExt = fileName;
+                        if (f.type === 'SERVER_JS' && !fileName.endsWith('.gs')) {
+                            nameWithExt = `${fileName}.gs`;
+                        } else if (f.type === 'HTML' && !fileName.endsWith('.html')) {
+                            nameWithExt = `${fileName}.html`;
+                        } else if (f.type === 'JSON' && !fileName.endsWith('.json')) {
+                            nameWithExt = `${fileName}.json`;
+                        }
+
+                        return {
+                            id: String(index),
+                            name: nameWithExt,
+                            type: 'file',
+                            content: f.source
+                        };
+                    });
+
+                    setFiles(nodes);
+                    if (nodes.length > 0) {
+                        setSelectedFileId(nodes[0].id);
+                        setFileContent(nodes[0].content || '');
+                    }
+                }
+            } else {
+                console.warn('Chrome runtime not available');
+                setFiles(MOCK_FILES);
+            }
+        } catch (error) {
+            console.error('Error loading project:', error);
+            alert('Error loading project');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSaveProject = async () => {
+        if (!projectId) return;
+
+        try {
+            const gasFiles = files.map(f => {
+                const name = f.name.replace(/\.(gs|html|json)$/, '');
+                let type = 'SERVER_JS';
+                if (f.name.endsWith('.html')) type = 'HTML';
+                if (f.name.endsWith('.json')) type = 'JSON';
+
+                return {
+                    name,
+                    type,
+                    source: f.content
+                };
+            });
+
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+                const response = await chrome.runtime.sendMessage({
+                    type: 'UPDATE_PROJECT_CONTENT',
+                    scriptId: projectId,
+                    files: gasFiles
+                });
+
+                if (response.error) {
+                    alert(`Save failed: ${response.error}`);
+                } else {
+                    alert('Saved successfully!');
+                }
+            }
+        } catch (error) {
+            console.error('Save failed:', error);
+            alert('Save failed');
+        }
+    };
 
     const handleFileClick = (file: FileNode) => {
         if (file.type === 'file') {
@@ -134,6 +241,14 @@ const App: React.FC = () => {
         setModifiedContent('');
     };
 
+    if (isLoading) {
+        return (
+            <div className="flex h-screen w-screen items-center justify-center bg-white">
+                <div className="text-gray-500">Loading project...</div>
+            </div>
+        );
+    }
+
     return (
         <div className="flex h-screen w-screen bg-white overflow-hidden">
             {/* Sidebar */}
@@ -173,7 +288,11 @@ const App: React.FC = () => {
                     <div className="flex gap-2">
                         {!diffMode ? (
                             <>
-                                <button className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
+                                <button
+                                    className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:opacity-50"
+                                    onClick={handleSaveProject}
+                                    disabled={!projectId}
+                                >
                                     Save
                                 </button>
                                 <button
