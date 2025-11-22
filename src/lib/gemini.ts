@@ -9,13 +9,22 @@ export class GeminiClient {
         this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     }
 
-    async generateCode(prompt: string): Promise<string> {
-        const systemPrompt = `You are a Google Apps Script code generator. 
+    async generateCode(prompt: string, currentCode?: string): Promise<string> {
+        let systemPrompt = `You are a Google Apps Script code generator.
 Generate ONLY the requested Google Apps Script code without any explanations, comments, or markdown formatting.
 Do not include \`\`\`javascript or any other markdown code blocks.
-Return only the pure JavaScript/Google Apps Script code.
+Return only the pure JavaScript/Google Apps Script code.`;
 
-User request: ${prompt}`;
+        if (currentCode) {
+            systemPrompt += `\n\nThe following is the current code in the editor:
+\`\`\`javascript
+${currentCode}
+\`\`\`
+
+Please modify this code according to the user's request. Return the COMPLETE updated code, not just the changes.`;
+        }
+
+        systemPrompt += `\n\nUser request: ${prompt}`;
 
         try {
             const result = await this.model.generateContent(systemPrompt);
