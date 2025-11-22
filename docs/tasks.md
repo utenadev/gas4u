@@ -32,7 +32,7 @@
 ## 次のステップ
 - [ ] Chrome拡張機能としての実機テスト
 - [x] APIキー設定画面の実装
-- [ ] Google Apps Script APIとの連携
+- [x] Google Apps Script APIとの連携 (Client実装, Background処理)
 - [ ] 実際のGASプロジェクトの読み込み・保存機能
 
 ## UI改善（将来）

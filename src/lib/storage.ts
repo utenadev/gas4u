@@ -1,5 +1,6 @@
 export enum StorageKey {
     GEMINI_API_KEY = 'GEMINI_API_KEY',
+    GAS_ACCESS_TOKEN = 'GAS_ACCESS_TOKEN',
     PROJECTS = 'PROJECTS',
 }
 

@@ -8,6 +8,7 @@ interface SettingsModalProps {
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
     const [apiKey, setApiKey] = useState('');
+    const [gasToken, setGasToken] = useState('');
     const [status, setStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
     useEffect(() => {
@@ -19,11 +20,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
     const loadSettings = async () => {
         const key = await storage.get<string>(StorageKey.GEMINI_API_KEY);
         if (key) setApiKey(key);
+        const token = await storage.get<string>(StorageKey.GAS_ACCESS_TOKEN);
+        if (token) setGasToken(token);
     };
 
     const handleSave = async () => {
         setStatus('saving');
         await storage.set(StorageKey.GEMINI_API_KEY, apiKey);
+        await storage.set(StorageKey.GAS_ACCESS_TOKEN, gasToken);
         setStatus('saved');
         setTimeout(() => {
             setStatus('idle');
@@ -56,6 +60,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                     />
                     <p className="text-xs text-gray-500 mt-1">
                         Google AI Studio で取得したキーを入力してください。
+                    </p>
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Google Access Token (Optional)
+                    </label>
+                    <input
+                        type="password"
+                        className="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                        placeholder="OAuth2 Access Token"
+                        value={gasToken}
+                        onChange={(e) => setGasToken(e.target.value)}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                        GAS APIテスト用。OAuth設定が完了していない場合に使用します。
+                        <br />
+                        <a href="https://developers.google.com/oauthplayground" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+                            OAuth Playground
+                        </a> で取得可能です。
                     </p>
                 </div>
 
