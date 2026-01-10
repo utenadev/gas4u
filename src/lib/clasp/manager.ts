@@ -1,5 +1,5 @@
 import { GASClient } from './api';
-import { GASFile } from './types';
+
 
 export class ClaspManager {
     /**

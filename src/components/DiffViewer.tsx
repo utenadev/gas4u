@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { DiffEditor } from '@monaco-editor/react';
 
 interface DiffViewerProps {
@@ -7,7 +7,7 @@ interface DiffViewerProps {
     language?: string;
 }
 
-export const DiffViewer: React.FC<DiffViewerProps> = ({
+export const DiffViewer: FC<DiffViewerProps> = ({
     original,
     modified,
     language = 'javascript',
@@ -19,14 +19,14 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
                 language={language}
                 original={original}
                 modified={modified}
+                theme="light"
                 options={{
                     minimap: { enabled: false },
                     fontSize: 14,
                     wordWrap: 'on',
                     automaticLayout: true,
                     renderSideBySide: false,
-                    readOnly: true, // Usually diffs are read-only
-                    theme: 'vs-light', // Or dynamic based on setting
+                    readOnly: true,
                 }}
             />
         </div>
