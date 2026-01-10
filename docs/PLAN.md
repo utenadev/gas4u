@@ -1,31 +1,40 @@
-# Step 3 Implementation Plan - Core Libraries & Basic UI
+# Step 5 Implementation Plan - GAS Integration (Clasp features)
 
 ## 目標
-- **FR-004: Gemini API管理** の実装
-  - APIキーをChromeの`storage.local`に安全に保存する仕組み。
-  - ポップアップ画面でAPIキーを設定できるUI。
-- **FR-001: AIコード生成** のコアクライアント実装
-  - Gemini APIを呼び出すクライアントクラスの移植と調整。
+- **FR-002: GASプロジェクト管理**
+- **FR-003: ソースコード同期**
+- Google Apps Script API と連携し、プロジェクトの取得(pull)と更新(push)を実現する。
 
 ## 実装詳細
 
-### 1. Storage Manager (`src/lib/storage/`)
-- `types.ts`: 保存するデータ型定義（`AppSettings`など）。
-- `manager.ts`: `chrome.storage.local` のラッパー。`getApiKey`, `setApiKey` などのヘルパーメソッドを提供。
+### 1. Manifest Update (`src/manifest.json`)
+- `oauth2` セクションの追加。
+  - Scope: `https://www.googleapis.com/auth/script.projects`, `https://www.googleapis.com/auth/script.webapp.deploy` など。
+- `permissions` に `identity` を追加。
+- `host_permissions` に `https://script.googleapis.com/*` を追加。
 
-### 2. Gemini Client (`src/lib/gemini/`)
-- `types.ts`: APIレスポンスやリクエストの型定義。
-- `client.ts`: `@google/generative-ai` のラッパークラス。
-  - コンストラクタでAPIキーを受け取る。
-  - `generateCode(prompt, currentCode)` メソッド。
-  - レガシーコード (`legacy/lib/gemini.ts`) をベースにするが、エラーハンドリングを強化。
+### 2. Clasp Types (`src/lib/clasp/types.ts`)
+- GAS APIのレスポンス型（`File`, `Project`）を定義。
+- ローカル独自の型定義。
 
-### 3. Popup UI (`src/popup/`)
-- `index.tsx` / `App.tsx` (or similar):
-  - Tailwind CSSを使用したモダンなUI。
-  - APIキー入力フォーム。
-  - 保存成功時のフィードバック（トースト通知など）。
+### 3. GAS API Client (`src/lib/clasp/api.ts`)
+- `chrome.identity.getAuthToken` でアクセストークンを取得。
+- REST API (`https://script.googleapis.com/v1/projects/...`) を叩くラッパー。
+  - `getContent(scriptId)`
+  - `updateContent(scriptId, files)`
+
+### 4. Clasp Manager (`src/lib/clasp/manager.ts`)
+- UIとAPIの橋渡し。
+- エラーハンドリング。
+
+### 5. Editor UI Update (`src/editor/index.tsx`)
+- Project ID 入力欄（またはURLから抽出）。
+- 「Load Project」「Save Project」ボタンの追加。
+- ロード時のコード反映、保存時のコード送信処理。
+
+## 注意事項
+- **OAuth Client ID**: 開発中は `key` フィールドが無いとIDが変わり、GCP設定と不整合が起きる。今回はコード上はプレースホルダーにし、ユーザーに後で設定してもらうか、インストラクションを提供する。
 
 ## 検証
-- `npm run build` が通ること。
-- Chrome拡張として読み込み、ポップアップでAPIキーが保存・読み出しできること（手動確認）。
+- Editor画面でScript IDを入力し、ロードできるか。
+- 編集して保存できるか。

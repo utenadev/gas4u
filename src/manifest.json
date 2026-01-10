@@ -6,11 +6,21 @@
   "permissions": [
     "storage",
     "activeTab",
-    "scripting"
+    "scripting",
+    "identity"
   ],
   "host_permissions": [
-    "https://script.google.com/*"
+    "https://script.google.com/*",
+    "https://script.googleapis.com/*",
+    "https://www.googleapis.com/*"
   ],
+  "oauth2": {
+    "client_id": "YOUR_CLIENT_ID_HERE.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/script.projects",
+      "https://www.googleapis.com/auth/userinfo.email"
+    ]
+  },
   "action": {
     "default_popup": "src/popup/index.html",
     "default_icon": {
