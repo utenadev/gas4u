@@ -9,3 +9,4 @@
 - [x] `manifest.json` (V3) の作成
 - [x] Core Libraries実装 (`StorageManager`, `GeminiClient`)
 - [x] Popup UI実装 (API Key設定画面)
+- [x] AI機能実装 (`DiffViewer`, `PromptInput`, `EditorApp`統合)
