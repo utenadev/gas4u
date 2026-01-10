@@ -1,23 +1,45 @@
-# 初期セットアップ計画
+# ディレクトリ構成再構築計画
 
 ## 目標
-- MITライセンスファイルの作成
-- GitHubへのソースコードのプッシュ
-
-## ユーザーレビューが必要な事項
-- 特になし
+- docs/IMPLEMENTATION_GUIDE.md に基づき、ディレクトリ構成を再構築する。
+- 既存の `src` ディレクトリを退避し、新しい構造を作成する。
 
 ## 変更内容
 
-### ルートディレクトリ
-#### [NEW] [LICENSE](file:///wsl.localhost/Ubuntu-24.04/home/kench/workspace/gas4u/LICENSE)
-- MIT Licenseの文面を追加します。
+### 1. 既存コードのアーカイブ
+- 現在の `src/` の内容を `legacy/src_backup_[timestamp]/` に移動（念のため）。
+- `legacy/` が既に存在するため、既存の `legacy` はそのままとする。
 
-## 検証計画
+### 2. 新しいディレクトリ構造の作成 (`src/`)
+以下の構造を作成する。ファイルは一旦空、またはスケルトンのみ作成。
 
-### 自動テスト
-- なし（ファイル作成とコマンド実行のみのため）
+```
+src/
+├── background/
+│   └── index.ts
+├── popup/
+│   ├── index.html
+│   └── index.tsx
+├── editor/
+│   └── index.tsx (仮)
+├── lib/
+│   ├── gemini/
+│   │   ├── client.ts
+│   │   └── types.ts
+│   ├── storage/
+│   │   ├── manager.ts
+│   │   └── types.ts
+│   └── clasp/
+│       ├── manager.ts
+│       ├── api.ts
+│       └── types.ts
+├── types/
+│   └── index.d.ts (仮)
+└── manifest.json
+```
 
-### 手動検証
-1. `LICENSE` ファイルが作成されているか確認。
-2. `gh repo view` またはブラウザで GitHub リポジトリを確認し、コードが反映されているか確認。
+### 3. manifest.json の作成 (Manifest V3)
+- 基本的な設定（permissions, background service worker, popup action等）を記述。
+
+## 検証
+- `tree` コマンド等でディレクトリ構造が正しいことを確認。
