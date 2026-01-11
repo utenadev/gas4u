@@ -58,3 +58,22 @@
 1. `t/` ディレクトリの作成（`.gitignore` 済み）。
 2. 対象ファイルを `t/` へ移動。
 3. 文書構造のクリーンアップ確認。
+
+---
+
+# Taskfile Integration Plan (feat/add-taskfile)
+
+## 目標
+- 開発ワークフローを統一・効率化するために `go-task` (`Taskfile.yml`) を導入する。
+- 合わせて、品質管理ツール (Lint, Format, Test) を整備する。
+
+## 導入パッケージ
+- **Linter**: `eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, `@typescript-eslint/eslint-plugin`, `@typescript-eslint/parser`
+- **Formatter**: `prettier`, `eslint-config-prettier`
+- **Testing**: `vitest`
+
+## 作業手順
+1. 必要なnpmパッケージのインストール。
+2. 設定ファイルの作成 (`.eslintrc.cjs`, `.prettierrc`, `vitest.config.ts`)。
+3. `Taskfile.yml` の作成。
+4. `package.json` の `scripts` 調整（必要であれば）。

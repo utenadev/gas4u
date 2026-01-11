@@ -1,0 +1,64 @@
+version: '3'
+
+vars:
+  NODE_BIN: ./node_modules/.bin
+
+tasks:
+  setup:
+    desc: Install dependencies
+    cmds:
+      - npm install
+
+  dev:
+    desc: Start development server
+    cmds:
+      - npm run dev
+
+  build:
+    desc: Build the extension
+    cmds:
+      - npm run build
+
+  preview:
+    desc: Preview the build
+    cmds:
+      - npm run preview
+
+  type-check:
+    desc: Run TypeScript type checking
+    cmds:
+      - npx tsc --noEmit
+
+  lint:
+    desc: Run ESLint
+    cmds:
+      - npx eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0
+
+  lint-fix:
+    desc: Run ESLint and fix issues
+    cmds:
+      - npx eslint src --ext ts,tsx --fix
+
+  format:
+    desc: Run Prettier
+    cmds:
+      - npx prettier --write "src/**/*.{ts,tsx,css,json,md}"
+
+  test:
+    desc: Run tests (Vitest)
+    cmds:
+      - npx vitest run
+
+  check:
+    desc: Run all quality checks
+    cmds:
+      - task: type-check
+      - task: lint
+      - task: test
+
+  clean:
+    desc: Clean build artifacts and dependencies
+    cmds:
+      - rm -rf dist
+      - rm -rf node_modules
+      - rm -rf coverage

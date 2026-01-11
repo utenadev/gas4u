@@ -23,3 +23,7 @@
     - `docs/IMPLEMENTATION_GUIDE.md`
     - `build_log.txt`, `build_log_2.txt`
   - `.gitignore` に `t/` が含まれていることを確認
+- [x] Taskfile導入 (`feat/add-taskfile`)
+  - `Taskfile.yml` 作成
+  - 開発ツール導入 (`eslint`, `prettier`, `vitest`)
+  - 設定ファイル作成 (`.eslintrc.cjs`, `.prettierrc`, `vitest.config.ts`)
