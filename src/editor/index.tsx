@@ -8,7 +8,7 @@ import { StorageManager } from '../lib/storage/manager';
 import { ClaspManager } from '../lib/clasp/manager';
 import '../index.css';
 
-const EditorApp = () => {
+export const EditorApp = () => {
     const [scriptId, setScriptId] = useState('');
     const [currentFileName, setCurrentFileName] = useState('Code');
     const [originalCode, setOriginalCode] = useState('function myFunction() {\n  // your code here\n}\n');
@@ -43,8 +43,9 @@ const EditorApp = () => {
                 setCurrentFileName(project.name);
                 await StorageManager.saveSettings({ lastProjectId: scriptId });
             }
-        } catch (e: any) {
-            setError('Failed to load project: ' + e.message);
+        } catch (e) {
+            const message = e instanceof Error ? e.message : String(e);
+            setError('Failed to load project: ' + message);
         } finally {
             setIsLoadingProject(false);
         }
@@ -62,8 +63,9 @@ const EditorApp = () => {
             // If there's pending modified code, user should accept it first.
             await ClaspManager.saveProject(scriptId, originalCode, currentFileName);
             alert('Successfully saved to GAS project!');
-        } catch (e: any) {
-            setError('Failed to save project: ' + e.message);
+        } catch (e) {
+            const message = e instanceof Error ? e.message : String(e);
+            setError('Failed to save project: ' + message);
         } finally {
             setIsLoadingProject(false);
         }

@@ -41,9 +41,10 @@ Please modify this code according to the user's request. Return the COMPLETE upd
             code = code.replace(/```\n?$/gm, '');
 
             return { code: code.trim() };
-        } catch (error: any) {
+        } catch (error) {
             console.error('Error generating code:', error);
-            return { code: '', error: error.message || 'Unknown error occurred' };
+            const message = error instanceof Error ? error.message : 'Unknown error occurred';
+            return { code: '', error: message };
         }
     }
 
@@ -53,9 +54,10 @@ Please modify this code according to the user's request. Return the COMPLETE upd
             const result = await this.model.generateContent(prompt);
             const response = await result.response;
             return { explanation: response.text() };
-        } catch (error: any) {
+        } catch (error) {
             console.error('Error explaining code:', error);
-            return { explanation: '', error: error.message || 'Unknown error occurred' };
+            const message = error instanceof Error ? error.message : 'Unknown error occurred';
+            return { explanation: '', error: message };
         }
     }
 }

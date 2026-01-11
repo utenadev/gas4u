@@ -32,12 +32,12 @@ tasks:
   lint:
     desc: Run ESLint
     cmds:
-      - npx eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0
+      - npx eslint src --report-unused-disable-directives --max-warnings 0
 
   lint-fix:
     desc: Run ESLint and fix issues
     cmds:
-      - npx eslint src --ext ts,tsx --fix
+      - npx eslint src --fix
 
   format:
     desc: Run Prettier

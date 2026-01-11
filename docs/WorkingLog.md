@@ -25,5 +25,8 @@
   - `.gitignore` に `t/` が含まれていることを確認
 - [x] Taskfile導入 (`feat/add-taskfile`)
   - `Taskfile.yml` 作成
-  - 開発ツール導入 (`eslint`, `prettier`, `vitest`)
-  - 設定ファイル作成 (`.eslintrc.cjs`, `.prettierrc`, `vitest.config.ts`)
+  - 開発ツール導入 (`eslint` v9, `prettier`, `vitest`)
+  - 設定ファイル作成 (`eslint.config.js`, `.prettierrc`, `vitest.config.ts`)
+  - `task check` 実行のためのコードクリーンアップ (explicit any の削除等)
+  - サンプルテストの作成 (`src/lib/storage/manager.test.ts`)
+  - `task check` による品質チェックの合格を確認
