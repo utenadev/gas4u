@@ -11,3 +11,9 @@
 - [x] Popup UI実装 (API Key設定画面)
 - [x] AI機能実装 (`DiffViewer`, `PromptInput`, `EditorApp`統合)
 - [x] GASプロジェクト連携実装 (`manifest.json` OAuth2, `ClaspManager`, Editor Load/Save)
+
+## 2026-01-11
+- [x] ファイル整理 (`refactor/cleanup-files`)
+  - `docs/PLAN.md` 更新
+  - 不要/一時ファイルを `t/` ディレクトリへ移動 (`docs/llm`, `docs/COMMAND_MEMO.md`, `docs/idea.md`, `docs/tasks.md`, `docs/IMPLEMENTATION_GUIDE.md`)
+  - `.gitignore` に `t/` が含まれていることを確認
