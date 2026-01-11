@@ -77,3 +77,14 @@
 2. 設定ファイルの作成 (`.eslintrc.cjs`, `.prettierrc`, `vitest.config.ts`)。
 3. `Taskfile.yml` の作成。
 4. `package.json` の `scripts` 調整（必要であれば）。
+
+## ステートマシン図作成
+- GAS4Uプロジェクトのステートマシンを分析・文書化
+- `docs/StateMachineDiagrams.md` に以下の内容を追記：
+  - メインエディタコンポーネントの状態遷移
+  - ポップアップ設定コンポーネントの状態管理
+  - プロンプト入力コンポーネントのUI状態
+  - 非同期処理の一般的な状態遷移パターン
+  - 差分表示モードの状態管理
+  - ASCIIアートとMermaid記法の両方で表現
+  - Mermaidの利点と使用方法の記載
