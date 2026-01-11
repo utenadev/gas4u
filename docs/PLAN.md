@@ -38,3 +38,23 @@
 ## 検証
 - Editor画面でScript IDを入力し、ロードできるか。
 - 編集して保存できるか。
+
+---
+
+# Cleanup Plan (refactor/cleanup-files2)
+
+## 目標
+- プロジェクトルートおよび `docs/` 内の整理を行い、開発に関連の薄くなったドキュメントや一時ファイルを `t/` (temporary) ディレクトリへ退避させる。
+
+## 対象ファイル
+- `docs/llm/` (ディレクトリ)
+- `docs/COMMAND_MEMO.md`
+- `docs/idea.md`
+- `docs/tasks.md`
+- `docs/IMPLEMENTATION_GUIDE.md`
+- `build_log.txt`, `build_log_2.txt`
+
+## 手順
+1. `t/` ディレクトリの作成（`.gitignore` 済み）。
+2. 対象ファイルを `t/` へ移動。
+3. 文書構造のクリーンアップ確認。
