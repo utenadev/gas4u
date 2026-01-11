@@ -2,7 +2,68 @@
 
 ---
 
+## 2026-01-12
+
+### Git履歴からの追加（docs/WorkingLog.md履歴化）
+
+| 日付       | コミット  | 内容                                                                        |
+| ---------- | --------- | --------------------------------------------------------------------------- |
+| 2025-11-20 | `79d1f44` | Initial commit: Add documentation and project structure plan                |
+| 2025-11-21 | `451c3de` | feat: Complete Phase 1 - Project Foundation (Vite, React, TS, Tailwind)     |
+| 2025-11-21 | `39e628f` | feat: Implement Web Preview mock and common UI components                   |
+| 2025-11-21 | `2ac2726` | Implement Phase 2 UI (Popup/Editor) and Phase 3 Core Logic (Gemini/Storage) |
+| 2025-11-21 | `76b3beb` | Implement Clasp compatible logic (Manifest types and extension helpers)     |
+| 2025-11-21 | `53a2783` | Implement Background Service Worker                                         |
+| 2025-11-21 | `e098cc7` | Integrate AI code generation flow into Editor                               |
+| 2025-11-22 | `7eb687b` | Complete Phase 4: Add AI code generation, E2E testing, and documentation    |
+| 2025-11-22 | `84b052b` | Add future UI improvement tasks for AI chat interface                       |
+| 2025-11-22 | `cd9d817` | feat: implement Diff View for AI code generation                            |
+| 2025-11-22 | `1ae939b` | feat: implement API Key Settings modal                                      |
+| 2025-11-22 | `1428eef` | fix: update AI generation to replace content instead of append              |
+| 2025-11-22 | `596fcd2` | feat: implement GAS API integration with GasClient and manual token support |
+| 2025-11-22 | `f8c1983` | feat: implement real GAS project fetching and saving in Popup and Editor    |
+
+## 2026-01-10
+
+### プロジェクト再構成
+
+- `ec3d44c` | Add SPEC.md, BLUEPRINT.md and IMPLEMENTATION_GUIDE.md for project restructuring
+- `b9d937e` | Move old src to legacy and create new directory structure based on blueprint
+- `d21d825` | docs: add PLAN.md, WorkingLog.md and LICENSE
+- `4cdbef1` | docs: update WorkingLog.md
+- `1c9e48c` | chore: complete Step 1 & 2 (restructure and manifest)
+
+### コア機能実装（Step 3-5）
+
+- `24fd526` | feat: implement core libraries and popup settings (Step 3)
+- `9092b6b` | feat: implement AI features (Editor, Prompt, Client integration) (Step 4)
+- `fb5ba6d` | feat: implement GAS project management features (Step 5)
+
+### UI実装
+
+- `044d4b5` | feat: Implement Premium UI, Monaco Editor, and update docs
+
+### リファクタリング
+
+- `2221073` | refactor: cleanup documentation and temporary files
+
 ## 2026-01-11
+
+### タスク管理ツール導入
+
+- `5041ec2` | Merge pull request #2 from utenadev/refactor/cleanup-files2
+- `05f5b17` | feat: add Taskfile and dev tools (eslint, prettier, vitest)
+- `2e345c4` | fix: resolve lint errors and make task check pass
+
+### ステートマシンとドキュメント
+
+- `33e7753` | Merge pull request #3 from utenadev/feat/add-taskfile
+- `a376bcf` | docs: add state machine diagrams and update working log
+- `ff1ab49` | feat: merge state machine documentation from feat/add-taskfile
+
+### メインブランチマージ
+
+- `21c4c30` | Merge branch 'main' of https://github.com/utenadev/gas4u
 
 ### Code Review
 
@@ -35,11 +96,8 @@
 **コミット**: `bb46422` feat(improve/implementation): Add rate limiting and token refresh
 **PR**: https://github.com/utenadev/gas4u/pull/5
 
----
+### 履歴化作業
 
-## Git履歴から抽出（2026-01-11）
-
-| Hash      | メッセージ                                                         |
-| --------- | ------------------------------------------------------------------ |
-| `bb46422` | feat(improve/implementation): Add rate limiting and token refresh  |
-| `d6cd7af` | feat(improve/test-coverage): Add ClaspManager tests and test setup |
+- `ae0efda` | Merge pull request #4 from utenadev/improve/test-coverage
+- `d8fcda1` | Merge pull request #5 from utenadev/improve/implementation
+- `d369d37` | docs: reformat WorkingLog.md as chronological history
