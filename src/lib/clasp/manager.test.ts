@@ -5,9 +5,27 @@ import type { GASFile } from './types'
 
 vi.mock('./api')
 
+const mockChrome = {
+  identity: {
+    getAuthToken: vi.fn(),
+    removeAuthToken: vi.fn(),
+  },
+  runtime: {
+    lastError: null,
+  },
+}
+
+vi.stubGlobal('chrome', mockChrome)
+global.fetch = vi.fn()
+
 describe('ClaspManager', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ files: [] }),
+      text: () => Promise.resolve(''),
+    } as Response)
   })
 
   describe('loadProject', () => {
