@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -19,6 +22,8 @@
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.28",
     "@eslint/js": "^9.39.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
     "@types/chrome": "^0.0.270",
     "@types/node": "^25.0.6",
     "@types/react": "^18.3.3",
@@ -32,6 +37,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.26",
     "globals": "^17.0.0",
+    "happy-dom": "^20.1.0",
     "jsdom": "^27.4.0",
     "postcss": "^8.4.47",
     "prettier": "^3.7.4",

@@ -1,9 +1,17 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite'
+/// <reference types="vitest/globals" />
+import { defineConfig } from 'vitest/config'
+import path from 'node:path'
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   test: {
-    environment: 'jsdom', // web extension environment typically needs dom
+    environment: 'happy-dom',
     globals: true,
+    setupFiles: ['./src/test/setup.ts'],
   },
 })
