@@ -5,18 +5,8 @@ import type { GASFile } from './types'
 
 vi.mock('./api')
 
-const mockChrome = {
-  identity: {
-    getAuthToken: vi.fn(),
-    removeAuthToken: vi.fn(),
-  },
-  runtime: {
-    lastError: null,
-  },
-}
+// chrome is mocked globally in setup.ts
 
-vi.stubGlobal('chrome', mockChrome)
-global.fetch = vi.fn()
 
 describe('ClaspManager', () => {
   beforeEach(() => {

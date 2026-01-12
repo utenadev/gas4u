@@ -109,3 +109,12 @@
 - `npm install` を実行し、開発環境を復旧
 - `npm test` が実行可能であることを確認（テスト自体は失敗するが、ツールチェーンは正常）
 
+### Phase 2: テスト環境整備
+
+- `src/test/mocks/chrome.ts`: Chrome API Mock を大幅に拡充（storage, identity, tabs 等）
+- `src/test/mocks/monaco.tsx`: Monaco Editor の Canvas 依存を回避する Mock 作成
+- `src/test/setup.ts`: グローバル環境への Mock 適用と重複排除
+- `src/lib/clasp/manager.test.ts`: 重複していた Mock 定義を削除し、グローバル Mock を使用するように修正
+- `npx vitest run` が実行時エラー（ReferenceError 等）なく動作することを確認
+
+

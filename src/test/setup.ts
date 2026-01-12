@@ -1,20 +1,21 @@
 import '@testing-library/jest-dom'
 import { cleanup } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
+import { mockChrome } from './mocks/chrome'
 
 afterEach(() => {
   cleanup()
+  vi.clearAllMocks()
 })
 
-const mockChrome = {
-  identity: {
-    getAuthToken: vi.fn(),
-    removeAuthToken: vi.fn(),
-  },
-  runtime: {
-    lastError: null,
-  },
-}
-
+// Mock Chrome API
 vi.stubGlobal('chrome', mockChrome)
+
+// Mock Monaco Editor
+vi.mock('@monaco-editor/react', async () => {
+  return await vi.importActual('./mocks/monaco')
+})
+
+// Mock fetch
 global.fetch = vi.fn()
+

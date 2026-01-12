@@ -280,3 +280,22 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 ## 検証
 - `npm run dev` や `npm test` コマンドが実行可能になること。
 
+---
+
+# Phase 2: Test Infrastructure (chore/test-infrastructure)
+
+## 目標
+テスト環境を整備し、`npm test` がエラーなく実行できるようにする（テスト自体の失敗は許容するが、実行時エラーは解消する）。特に、Chrome API Mock の不足と Monaco Editor の互換性問題を解決する。
+
+## 作業手順
+1. ブランチ `chore/test-infrastructure` 作成
+2. `src/test/setup.ts` の Chrome API Mock を拡充（storage, runtime等）
+3. `src/test/mocks/monaco.tsx` を作成し、Monaco Editor をダミーコンポーネントに置換
+4. `src/test/setup.ts` で Monaco Mock を適用
+5. `npm test` を実行し、実行時エラー（TypeError等）が解消されるか確認
+6. 作業ログ記録
+
+## 検証
+- `npm test` 実行時に "Chrome is not defined" や Monaco 関連のレンダリングエラーが発生しないこと。
+
+
