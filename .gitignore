@@ -7,9 +7,6 @@ coverage/
 .vscode/
 t/
 legasy/
-AGENTS.md
-GEMINI.md
-QWEN.md
 .cache
 .qoder
 .qwen
