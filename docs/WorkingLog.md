@@ -41,7 +41,7 @@
 
 ### UI実装
 
-- `044d4b5` | feat: Implement Premium UI, Monaco Editor, and update docs
+- `044d4b5` | feat: implement Premium UI, Monaco Editor, and update docs
 
 ### リファクタリング
 
@@ -133,15 +133,13 @@
 - `src/hooks/useProjectOperations.ts`: プロジェクト操作（load/save）のロジック
 - `src/hooks/useGeminiIntegration.ts`: Gemini AIとの連携ロジック
 - `src/editor/index.tsx`: 上記コンポーネントとフックを使用するように更新
-- **結果**: コンポーネント分割は実施したが、`npm run build` で型エラーが発生
+- **結果**: コンポーネント分割完了。`npm run build` も成功。
 
-### ビルドエラーの状況
+### ツールチェーン移行とテスト拡充
 
-- エラー内容: `src/editor/index.tsx(54,43): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.`
-- 原因: `EditorContainer` コンポーネントの `onChange` プロパティに渡す関数で、`string | undefined` 型の値を `string` 型のパラメータに渡しているため。
-- 対応: 複数の修正を試みたが、エラーが解消されず。具体的には、`EditorContainer.tsx` での `onChange` の型定義と `Editor` コンポーネントへの `onChange` 渡し方、`EditorApp.tsx` での `EditorContainer` への `onChange` 渡し方、`useEditorState.ts` での `setOriginalCode` の型定義と実装を変更した。
-- 状況: 現在、`EditorContainer.tsx` で `Editor` コンポーネントに渡す `onChange` は `(value) => onChange(value || '')` であり、`EditorContainer.tsx` の `onChange` の型定義は `(value: string | undefined) => void` である。`EditorApp.tsx` で `EditorContainer` に渡す `onChange` は `(value) => editorActions.setOriginalCode(value ?? '')` であり、`useEditorState.ts` の `setOriginalCode` の型定義は `(code: string | undefined) => void` である。
-- 課題: TypeScriptの型推論が正しく働かない可能性がある。`EditorContainer.tsx` で `Editor` コンポーネントに渡す `onChange` が `undefined` を `''` に変換しているにもかかわらず、`EditorApp.tsx` に渡される `value` が `string | undefined` として扱われている。
+- **Biome移行**: ESLint/Prettier から Biome への移行を完了
+- **テスト拡充**: GASClient (`src/lib/clasp/api.ts`) のトークンリフレッシュ機能を実装し、テスト (`src/lib/clasp/api.test.ts`) を追加。全テストパス。
+- **品質向上**: Lintエラーの解消、アクセシビリティの向上 (`aria-label` 等の追加)
+- **環境整備**: `biome.json` の更新と移行
 
-
-
+**コミット**: `feat(clasp): implement token refresh and add tests`
