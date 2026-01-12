@@ -247,11 +247,17 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
    - `<EditorContainer />` コンポーネント抽出
    - カスタムフック `useEditorState()` 実装
    - カスタムフック `useProjectOperations()` 実装
+   - カスタムフック `useGeminiIntegration()` 実装
 
 ## 実装手順
 1. GeminiClientにレート制限機能を追加
 2. GASClientにトークンリフレッシュ機能を追加
 3. EditorAppを小コンポーネントに分割
+   - `ProjectHeader.tsx`: プロジェクトID入力欄とLoad/Saveボタンを担当
+   - `EditorContainer.tsx`: Monaco Editor本体を担当
+   - `useEditorState.ts`: エディターの状態管理（コード、カーソル位置、テーマ等）
+   - `useProjectOperations.ts`: プロジェクト操作（load/save）のロジック
+   - `useGeminiIntegration.ts`: Gemini AIとの連携ロジック
 4. 各機能のテストを追加
 5. `task check` による品質チェック
 6. docs/WorkingLog.md に作業結果を記録

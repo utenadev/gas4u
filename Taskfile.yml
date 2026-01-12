@@ -30,19 +30,19 @@ tasks:
       - npx tsc --noEmit
 
   lint:
-    desc: Run ESLint
+    desc: Run Biome lint
     cmds:
-      - npx eslint src --report-unused-disable-directives --max-warnings 0
+      - npx biome lint src
 
   lint-fix:
-    desc: Run ESLint and fix issues
+    desc: Run Biome lint and fix issues
     cmds:
-      - npx eslint src --fix
+      - npx biome lint src --apply
 
   format:
-    desc: Run Prettier
+    desc: Run Biome format
     cmds:
-      - npx prettier --write "src/**/*.{ts,tsx,css,json,md}"
+      - npx biome format src --write
 
   test:
     desc: Run tests (Vitest)
