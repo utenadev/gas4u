@@ -1,39 +1,39 @@
 {
-	"manifest_version": 3,
-	"name": "GAS4U - Google Apps Script Assistant",
-	"version": "1.0.0",
-	"description": "Boost your Google Apps Script development with AI and modern tools.",
-	"permissions": ["storage", "activeTab", "scripting", "identity"],
-	"host_permissions": [
-		"https://script.google.com/*",
-		"https://script.googleapis.com/*",
-		"https://www.googleapis.com/*"
-	],
-	"oauth2": {
-		"client_id": "YOUR_CLIENT_ID_HERE.apps.googleusercontent.com",
-		"scopes": [
-			"https://www.googleapis.com/auth/script.projects",
-			"https://www.googleapis.com/auth/userinfo.email"
-		]
-	},
-	"action": {
-		"default_popup": "src/popup/index.html",
-		"default_icon": {
-			"16": "icons/icon16.png",
-			"48": "icons/icon48.png",
-			"128": "icons/icon128.png"
-		}
-	},
-	"background": {
-		"service_worker": "src/background/index.ts",
-		"type": "module"
-	},
-	"icons": {
-		"16": "icons/icon16.png",
-		"48": "icons/icon48.png",
-		"128": "icons/icon128.png"
-	},
-	"content_security_policy": {
-		"extension_pages": "script-src 'self'; object-src 'self'"
-	}
+  "manifest_version": 3,
+  "name": "GAS4U - Google Apps Script Assistant",
+  "version": "1.0.0",
+  "description": "Boost your Google Apps Script development with AI and modern tools.",
+  "permissions": ["storage", "activeTab", "scripting", "identity"],
+  "host_permissions": [
+    "https://script.google.com/*",
+    "https://script.googleapis.com/*",
+    "https://www.googleapis.com/*"
+  ],
+  "oauth2": {
+    "client_id": "YOUR_CLIENT_ID_HERE.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/script.projects",
+      "https://www.googleapis.com/auth/userinfo.email"
+    ]
+  },
+  "action": {
+    "default_popup": "src/popup/index.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/background/index.ts",
+    "type": "module"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
 }

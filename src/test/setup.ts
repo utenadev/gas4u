@@ -4,8 +4,8 @@ import { afterEach, vi } from "vitest";
 import { mockChrome } from "./mocks/chrome";
 
 afterEach(() => {
-	cleanup();
-	vi.clearAllMocks();
+  cleanup();
+  vi.clearAllMocks();
 });
 
 // Mock Chrome API
@@ -13,7 +13,7 @@ vi.stubGlobal("chrome", mockChrome);
 
 // Mock Monaco Editor
 vi.mock("@monaco-editor/react", async () => {
-	return await vi.importActual("./mocks/monaco");
+  return await vi.importActual("./mocks/monaco");
 });
 
 // Mock fetch
