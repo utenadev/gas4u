@@ -42,7 +42,11 @@ export const useGeminiIntegration = (): [GeminiIntegration, GeminiIntegrationAct
 
       const result = await state.client.generateCode(prompt, originalCode);
 
-      setState((prev) => ({ ...prev, isGenerating: false }));
+      setState((prev) => ({
+        ...prev,
+        isGenerating: false,
+        error: result.error || null,
+      }));
 
       return result;
     },

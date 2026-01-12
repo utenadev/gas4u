@@ -1,14 +1,4 @@
-import type { GASFile } from "./types";
-
-interface ChromeIdentity {
-  getAuthToken: (options: { interactive: boolean }, callback: (token?: string) => void) => void;
-  removeCachedAuthToken: (details: { token: string }, callback?: () => void) => void;
-}
-
-interface Chrome {
-  identity: ChromeIdentity;
-  runtime: { lastError: chrome.runtime.LastError | null };
-}
+import type { Chrome, GASFile } from "./types";
 
 const chromeExtension = chrome as unknown as Chrome;
 

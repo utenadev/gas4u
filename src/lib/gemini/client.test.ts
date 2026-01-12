@@ -94,5 +94,30 @@ describe("GeminiClient", () => {
       const result = await client.explainCode("function x() {}");
       expect(result.explanation).toBe("This code does X.");
     });
+
+    it("should handle errors gracefully", async () => {
+      mocks.generateContent.mockRejectedValue(new Error("API Error"));
+
+      const result = await client.explainCode("function x() {}");
+      expect(result.explanation).toBe("");
+      expect(result.error).toBe("API Error");
+    });
+
+    // Rate limit testing
+    it("should queue requests (rate limiting)", async () => {
+      mocks.generateContent.mockResolvedValue({
+        response: { text: () => "explanation" },
+      });
+
+      const start = Date.now();
+      const p1 = client.explainCode("code1");
+      const p2 = client.explainCode("code2");
+
+      await Promise.all([p1, p2]);
+      const duration = Date.now() - start;
+
+      // Should take at least 1000ms (COOLDOWN) due to sequential execution
+      expect(duration).toBeGreaterThanOrEqual(1000);
+    });
   });
 });

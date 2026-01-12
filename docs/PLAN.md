@@ -328,5 +328,93 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 - すべてのテストファイルがパスすること。
 - テストカバレッジが向上していること（オプション）。
 
+---
 
+# Code Review Refactoring Plan (refactor/code-review-20250112)
+
+## 目標
+2026-01-12に実施したコードレビューで特定された課題に対し、優先度の高い改善項目を実装する。
+
+## 対象課題
+
+### High Priority
+
+#### 1. GeminiClient - explainCodeにレート制限追加
+- **ファイル**: `src/lib/gemini/client.ts`
+- **課題**: `generateCode` はレート制限ありだが、`explainCode` は直接API呼び出し
+- **修正**: `explainCode` も同一の `requestQueue` に追加
+
+#### 2. useProjectOperations - alert()削除
+- **ファイル**: `src/hooks/useProjectOperations.ts`
+- **課題**: Reactアンチパターンの `alert()` 使用
+- **修正**: 戻り値で成功/失敗を返し、コンポーネント側でUI表示
+
+#### 3. EditorApp - useEffect依存配列修正
+- **ファイル**: `src/editor/index.tsx`
+- **課題**: `geminiActions` を依存配列に含めているが、関数オブジェクトなので無限ループのリスク
+- **修正**: 空配列 `[]` に変更
+
+### Medium Priority
+
+#### 4. EditorApp - エラークリア統一
+- **ファイル**: `src/editor/index.tsx`
+- **課題**: `projectActions.setError(null)` しか呼んでいない
+- **修正**: `clearAllErrors` 関数を作成し、全エラーをクリア
+
+#### 5. EditorApp - StorageManager使用
+- **ファイル**: `src/editor/index.tsx`
+- **課題**: `chrome.storage.sync.get` を直接呼んでいる
+- **修正**: `StorageManager.getSettings()` を使用
+
+#### 6. PopupApp - setTimeoutクリーンアップ
+- **ファイル**: `src/popup/App.tsx`
+- **課題**: `setTimeout` のクリーンアップがない
+- **修正**: `useEffect` でクリーンアップ追加
+
+#### 7. GASClient - 型定義移動
+- **ファイル**: `src/lib/clasp/api.ts`
+- **課題**: Chrome型定義がファイル内にある
+- **修正**: `types.ts` に移動
+
+#### 8. GeminiClient - currentCode型定義追加
+- **ファイル**: `src/lib/gemini/types.ts`
+- **課題**: `currentCode` パラメータが型定義にない
+- **修正**: 型定義に追加
+
+#### 9. useGeminiIntegration - エラー状態設定
+- **ファイル**: `src/hooks/useGeminiIntegration.ts`
+- **課題**: `result.error` がある場合、`state.error` に設定していない
+- **修正**: エラー状態を設定
+
+#### 10. 共通Spinnerコンポーネント作成
+- **ファイル**: `src/components/` 新規
+- **課題**: 複数箇所で同じSVGスピナーを記述
+- **修正**: `<Spinner />` コンポーネント作成
+
+#### 11. テスト追加
+- **ファイル**: `src/components/PromptInput.test.tsx`, `src/components/ProjectHeader.test.tsx`, `src/components/EditorContainer.test.tsx`
+- **課題**: テストが存在しない
+- **修正**: 各コンポーネントのテスト追加
+
+### Low Priority
+
+#### 12-17. 各種改善
+- REQUEST_COOLDOWN_MS設定可能化
+- リトライ定数抽出
+- useEditorStateのinitialCode仕様ドキュメント化
+- テーマ管理統一
+- PopupAppのステータス型改善
+- フォーマット修正
+
+## 実装手順
+1. High Priorityの修正を順に実装
+2. Medium Priorityの修正を実装
+3. `task check` で品質確認
+4. 必要に応じてLow Priorityを実施
+5. 全テストがパスすることを確認
+
+## 検証
+- `task check` がAll OKであること
+- 全てのテストがパスすること
+- 既存機能に破壊的変更がないこと
 

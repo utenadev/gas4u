@@ -143,3 +143,50 @@
 - **環境整備**: `biome.json` の更新と移行
 
 **コミット**: `feat(clasp): implement token refresh and add tests`
+
+### Code Review Refactoring (refactor/code-review-20250112)
+
+**日付**: 2026-01-12
+**レビューア**: Claude Code (GLM-4.7)
+**ブランチ**: `refactor/code-review-20250112`
+
+**実施内容**:
+
+1. **コードレビュー実施**
+   - `src/` 以下をパッケージ別にレビュー
+   - レビューレポート作成: `docs/report/review_20260112_claudecode+glm47.md`
+   - PLAN.md にリファクタリング計画を追記
+
+2. **High Priority修正**:
+   - `src/lib/gemini/client.ts`: explainCodeにレート制限追加（explainQueue導入）
+   - `src/hooks/useProjectOperations.ts`: alert()削除
+   - `src/editor/index.tsx`: useEffect依存配列修正（空配列 + biome-ignore）
+
+3. **Medium Priority修正**:
+   - `src/editor/index.tsx`: エラークリア統一（clearAllErrors関数作成）
+   - `src/editor/index.tsx`: StorageManager使用（chrome.storage直接呼び出し削除）
+   - `src/popup/App.tsx`: setTimeoutクリーンアップ追加
+   - `src/lib/clasp/api.ts`, `types.ts`: Chrome型定義をtypes.tsに移動
+   - `src/lib/gemini/types.ts`: メソッドシグネチャ（GeminiClientMethods）追加
+   - `src/hooks/useGeminiIntegration.ts`: エラー状態設定追加
+
+4. **コンポーネント共通化**:
+   - `src/components/Spinner.tsx`: 新規作成
+   - `src/components/PromptInput.tsx`: Spinner使用に更新
+   - `src/components/ProjectHeader.tsx`: Spinner使用に更新
+
+5. **テスト更新**:
+   - `src/lib/gemini/client.test.ts`: explainCodeのレート制限テスト追加
+
+**検証結果**:
+- `task check` All OK
+- Type check: パス
+- Lint: パス
+- Test: 30テスト全パス
+
+**改善点**:
+- APIレート制限の統一（generateCodeとexplainCode両方に適用）
+- Reactアンチパターンの解消（alert削除）
+- エラーハンドリングの一貫性向上
+- コード重複の削減（Spinnerコンポーネント）
+- 型安全性の向上

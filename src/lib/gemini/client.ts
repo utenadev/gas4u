@@ -8,6 +8,10 @@ export class GeminiClient {
     code: "",
     error: undefined,
   });
+  private explainQueue: Promise<ExplainCodeResponse> = Promise.resolve({
+    explanation: "",
+    error: undefined,
+  });
   private readonly REQUEST_COOLDOWN_MS = 1000;
 
   constructor(config: GeminiClientConfig) {
@@ -60,14 +64,21 @@ Please modify this code according to the user's request. Return the COMPLETE upd
 
   async explainCode(code: string): Promise<ExplainCodeResponse> {
     const prompt = `Please explain the following Google Apps Script code:\n\n\`\`\`javascript\n${code}\n\`\`\``;
-    try {
-      const result = await this.model.generateContent(prompt);
-      const response = await result.response;
-      return { explanation: response.text() };
-    } catch (error) {
-      console.error("Error explaining code:", error);
-      const message = error instanceof Error ? error.message : "Unknown error occurred";
-      return { explanation: "", error: message };
-    }
+
+    this.explainQueue = this.explainQueue.then(async () => {
+      try {
+        const result = await this.model.generateContent(prompt);
+        const response = await result.response;
+        return { explanation: response.text() };
+      } catch (error) {
+        console.error("Error explaining code:", error);
+        const message = error instanceof Error ? error.message : "Unknown error occurred";
+        return { explanation: "", error: message };
+      } finally {
+        await new Promise((resolve) => setTimeout(resolve, this.REQUEST_COOLDOWN_MS));
+      }
+    });
+
+    return this.explainQueue;
   }
 }

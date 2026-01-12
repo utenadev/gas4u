@@ -58,7 +58,7 @@ export const useProjectOperations = (): [ProjectOperations, ProjectOperationsAct
       setState((prev) => ({ ...prev, isLoadingProject: true, error: null }));
       try {
         await ClaspManager.saveProject(scriptId, code, fileName);
-        alert("Successfully saved to GAS project!");
+        // Success - error is already null
       } catch (e) {
         const message = e instanceof Error ? e.message : String(e);
         setState((prev) => ({
