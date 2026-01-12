@@ -11,11 +11,18 @@ export const App = () => {
     });
   }, []);
 
+  // Clear status message after 2 seconds
+  useEffect(() => {
+    if (status) {
+      const timer = setTimeout(() => setStatus(""), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
+
   const handleSave = async () => {
     try {
       await StorageManager.setApiKey(apiKey);
       setStatus("Saved successfully!");
-      setTimeout(() => setStatus(""), 2000);
     } catch (error) {
       console.error(error);
       setStatus("Error saving settings.");

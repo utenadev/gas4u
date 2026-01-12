@@ -7,6 +7,7 @@ import { PromptInput } from "../components/PromptInput";
 import { useEditorState } from "../hooks/useEditorState";
 import { useGeminiIntegration } from "../hooks/useGeminiIntegration";
 import { useProjectOperations } from "../hooks/useProjectOperations";
+import { StorageManager } from "../lib/storage/manager";
 import "../index.css";
 
 export const EditorApp = () => {
@@ -25,16 +26,24 @@ export const EditorApp = () => {
 
   const combinedError = editorError || projectError || geminiError;
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: geminiActions is stable but not detected
   useEffect(() => {
     geminiActions.initializeClient();
     const loadLastId = async () => {
-      const lastId = (await chrome.storage.sync.get(["lastProjectId"])).lastProjectId;
+      const settings = await StorageManager.getSettings();
+      const lastId = settings.lastProjectId;
       if (lastId) {
         setScriptId(lastId);
       }
     };
     loadLastId();
-  }, [geminiActions]);
+  }, []);
+
+  const clearAllErrors = () => {
+    editorActions.setError(null);
+    projectActions.setError(null);
+    geminiActions.setError(null);
+  };
 
   const handleLoadProject = async () => {
     await projectActions.loadProject(scriptId, (project) => {
@@ -138,7 +147,7 @@ export const EditorApp = () => {
               <p className="text-sm text-slate-600">{combinedError}</p>
             </div>
             <button
-              onClick={() => projectActions.setError(null)}
+              onClick={clearAllErrors}
               className="text-slate-400 hover:text-slate-600"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
