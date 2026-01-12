@@ -101,3 +101,11 @@
 - `ae0efda` | Merge pull request #4 from utenadev/improve/test-coverage
 - `d8fcda1` | Merge pull request #5 from utenadev/improve/implementation
 - `d369d37` | docs: reformat WorkingLog.md as chronological history
+
+## 2026-01-12
+
+### Phase 1: 環境復旧
+
+- `npm install` を実行し、開発環境を復旧
+- `npm test` が実行可能であることを確認（テスト自体は失敗するが、ツールチェーンは正常）
+

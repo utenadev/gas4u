@@ -263,3 +263,20 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 - トークンリフレッシュが正しく機能すること
 - EditorAppが小さなコンポーネントに分割されていること
 - すべてのテストがパスすること
+
+---
+
+# Phase 1: Restore Environment (chore/restore-env)
+
+## 目標
+`node_modules` が欠落している状態から、開発環境を復旧させる。
+
+## 作業手順
+1. ブランチ `chore/restore-env` 作成
+2. `npm install` 実行
+3. `task check` (または `npm test`) でツールチェーンが動作することを確認（テスト自体の成否は問わない）
+4. 作業ログ記録
+
+## 検証
+- `npm run dev` や `npm test` コマンドが実行可能になること。
+
