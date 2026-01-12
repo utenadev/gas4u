@@ -298,4 +298,29 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 ## 検証
 - `npm test` 実行時に "Chrome is not defined" や Monaco 関連のレンダリングエラーが発生しないこと。
 
+---
+
+# Phase 3: Implement Missing Tests (feat/phase3-tests)
+
+## 目標
+`WorkingLog.md` (Phase 1-A) で言及されていた未実装のテストを追加し、プロジェクトの信頼性を担保する。
+
+## 作業手順
+1. ブランチ `feat/phase3-tests` 作成
+2. `src/lib/storage/manager.ts` のテスト実装 (`src/lib/storage/manager.test.ts`)
+   - APIキーの保存・取得・削除
+   - エラーハンドリング
+3. `src/lib/gemini/client.ts` のテスト実装 (`src/lib/gemini/client.test.ts`)
+   - API呼び出しのMock化
+   - レート制限の動作確認
+4. `src/components/DiffViewer.tsx` のテスト実装 (`src/components/DiffViewer.test.tsx`)
+   - Mockコンポーネントがレンダリングされることの確認
+5. `npm test` (または `npx vitest run`) で全テストが通過することを確認
+6. 作業ログ記録
+
+## 検証
+- すべてのテストファイルがパスすること。
+- テストカバレッジが向上していること（オプション）。
+
+
 

@@ -1,0 +1,112 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.16 [39m[90mC:/workspace/gas4u[39m
+
+ [32m笨・[39m src/components/DiffViewer.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+stderr | src/lib/storage/manager.test.ts > StorageManager > getSettings > should return empty object on error
+Failed to get settings: Error: Storage error
+    at C:/workspace/gas4u/src/lib/storage/manager.test.ts:31:67
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:145:11
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:915:26
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1243:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1209:10)
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1653:37
+    at Traces.$ (file:///C:/workspace/gas4u/node_modules/vitest/dist/chunks/traces.U4xDYhzZ.js:115:27)
+    at trace (file:///C:/workspace/gas4u/node_modules/vitest/dist/chunks/test.B8ej_ZHS.js:239:21)
+    at runTest (file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1653:12)
+
+stderr | src/lib/storage/manager.test.ts > StorageManager > saveSettings > should throw error on failure
+Failed to save settings: Error: Save failed
+    at C:/workspace/gas4u/src/lib/storage/manager.test.ts:56:67
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:145:11
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:915:26
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1243:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1209:10)
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1653:37
+    at Traces.$ (file:///C:/workspace/gas4u/node_modules/vitest/dist/chunks/traces.U4xDYhzZ.js:115:27)
+    at trace (file:///C:/workspace/gas4u/node_modules/vitest/dist/chunks/test.B8ej_ZHS.js:239:21)
+    at runTest (file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1653:12)
+
+ [32m笨・[39m src/lib/storage/manager.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+stderr | src/lib/gemini/client.test.ts > GeminiClient > generateCode > should generate code successfully
+[vitest] The vi.fn() mock did not use 'function' or 'class' in its implementation, see https://vitest.dev/api/vi#vi-spyon for examples.
+
+stderr | src/lib/gemini/client.test.ts > GeminiClient > generateCode > should clean up markdown code blocks
+[vitest] The vi.fn() mock did not use 'function' or 'class' in its implementation, see https://vitest.dev/api/vi#vi-spyon for examples.
+
+stderr | src/lib/gemini/client.test.ts > GeminiClient > generateCode > should handle errors gracefully
+[vitest] The vi.fn() mock did not use 'function' or 'class' in its implementation, see https://vitest.dev/api/vi#vi-spyon for examples.
+
+stderr | src/lib/gemini/client.test.ts > GeminiClient > generateCode > should queue requests (rate limiting)
+[vitest] The vi.fn() mock did not use 'function' or 'class' in its implementation, see https://vitest.dev/api/vi#vi-spyon for examples.
+
+stderr | src/lib/gemini/client.test.ts > GeminiClient > explainCode > should explain code successfully
+[vitest] The vi.fn() mock did not use 'function' or 'class' in its implementation, see https://vitest.dev/api/vi#vi-spyon for examples.
+
+ [31m笶ｯ[39m src/lib/gemini/client.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[32m 9[2mms[22m[39m
+[31m       [31mﾃ・[31m should generate code successfully[39m[32m 5[2mms[22m[39m
+[31m       [31mﾃ・[31m should clean up markdown code blocks[39m[32m 1[2mms[22m[39m
+[31m       [31mﾃ・[31m should handle errors gracefully[39m[32m 1[2mms[22m[39m
+[31m       [31mﾃ・[31m should queue requests (rate limiting)[39m[32m 1[2mms[22m[39m
+[31m       [31mﾃ・[31m should explain code successfully[39m[32m 1[2mms[22m[39m
+stderr | src/lib/clasp/manager.test.ts > ClaspManager > loadProject > should throw error when no files found
+ClaspManager load error: Error: No files found in project
+    at Function.loadProject (C:/workspace/gas4u/src/lib/clasp/manager.ts:13:23)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+stderr | src/lib/clasp/manager.test.ts > ClaspManager > loadProject > should throw error when API call fails
+ClaspManager load error: Error: API error
+    at C:/workspace/gas4u/src/lib/clasp/manager.test.ts:61:57
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:145:11
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:915:26
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1243:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1209:10)
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1653:37
+    at Traces.$ (file:///C:/workspace/gas4u/node_modules/vitest/dist/chunks/traces.U4xDYhzZ.js:115:27)
+    at trace (file:///C:/workspace/gas4u/node_modules/vitest/dist/chunks/test.B8ej_ZHS.js:239:21)
+    at runTest (file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1653:12)
+
+stderr | src/lib/clasp/manager.test.ts > ClaspManager > saveProject > should throw error when API call fails
+ClaspManager save error: Error: API error
+    at C:/workspace/gas4u/src/lib/clasp/manager.test.ts:106:57
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:145:11
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:915:26
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1243:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1209:10)
+    at file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1653:37
+    at Traces.$ (file:///C:/workspace/gas4u/node_modules/vitest/dist/chunks/traces.U4xDYhzZ.js:115:27)
+    at trace (file:///C:/workspace/gas4u/node_modules/vitest/dist/chunks/test.B8ej_ZHS.js:239:21)
+    at runTest (file:///C:/workspace/gas4u/node_modules/@vitest/runner/dist/index.js:1653:12)
+
+ [32m笨・[39m src/lib/clasp/manager.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+
+竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ Failed Tests 5 竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ
+
+ FAIL  src/lib/gemini/client.test.ts > GeminiClient > generateCode > should generate code successfully
+ FAIL  src/lib/gemini/client.test.ts > GeminiClient > generateCode > should clean up markdown code blocks
+ FAIL  src/lib/gemini/client.test.ts > GeminiClient > generateCode > should handle errors gracefully
+ FAIL  src/lib/gemini/client.test.ts > GeminiClient > generateCode > should queue requests (rate limiting)
+ FAIL  src/lib/gemini/client.test.ts > GeminiClient > explainCode > should explain code successfully
+TypeError: () => ({
+    getGenerativeModel
+  }) is not a constructor
+ 笶ｯ new GeminiClient src/lib/gemini/client.ts:18:18
+     16| 
+     17|   constructor(config: GeminiClientConfig) {
+     18|     this.genAI = new GoogleGenerativeAI(config.apiKey)
+       |                  ^
+     19|     this.model = this.genAI.getGenerativeModel({
+     20|       model: config.modelName || 'gemini-2.0-flash-exp',
+ 笶ｯ src/lib/gemini/client.test.ts:30:18
+
+竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[1/5]竡ｯ
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[31m5 failed[39m[22m[2m | [22m[1m[32m14 passed[39m[22m[90m (19)[39m
+[2m   Start at [22m 16:43:12
+[2m   Duration [22m 1.24s[2m (transform 700ms, setup 983ms, import 752ms, tests 60ms, environment 2.00s)[22m
+

@@ -117,4 +117,13 @@
 - `src/lib/clasp/manager.test.ts`: 重複していた Mock 定義を削除し、グローバル Mock を使用するように修正
 - `npx vitest run` が実行時エラー（ReferenceError 等）なく動作することを確認
 
+### Phase 3: 不足テストの実装
+
+- `src/lib/storage/manager.test.ts` を実装し、APIキー保存等のテストを追加
+- `src/lib/gemini/client.test.ts` を実装し、AI生成フローのMockテストとレート制限の検証を追加
+- `src/components/DiffViewer.test.tsx` を実装し、Monaco Editor Mock が正しくレンダリングされることを確認
+- `tsconfig.json` の `exclude` にテストファイルを追加し、`npm run build` を成功させる
+- **結果**: `vitest run` で全テスト(19 cases)がパスし、`npm run build` も正常完了する状態に復旧
+
+
 
