@@ -125,5 +125,23 @@
 - `tsconfig.json` の `exclude` にテストファイルを追加し、`npm run build` を成功させる
 - **結果**: `vitest run` で全テスト(19 cases)がパスし、`npm run build` も正常完了する状態に復旧
 
+### Phase 1-B: EditorAppのコンポーネント分割
+
+- `src/components/ProjectHeader.tsx`: プロジェクトID入力欄とLoad/Saveボタンを担当
+- `src/components/EditorContainer.tsx`: Monaco Editor本体を担当
+- `src/hooks/useEditorState.ts`: エディターの状態管理（コード、カーソル位置、テーマ等）
+- `src/hooks/useProjectOperations.ts`: プロジェクト操作（load/save）のロジック
+- `src/hooks/useGeminiIntegration.ts`: Gemini AIとの連携ロジック
+- `src/editor/index.tsx`: 上記コンポーネントとフックを使用するように更新
+- **結果**: コンポーネント分割は実施したが、`npm run build` で型エラーが発生
+
+### ビルドエラーの状況
+
+- エラー内容: `src/editor/index.tsx(54,43): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.`
+- 原因: `EditorContainer` コンポーネントの `onChange` プロパティに渡す関数で、`string | undefined` 型の値を `string` 型のパラメータに渡しているため。
+- 対応: 複数の修正を試みたが、エラーが解消されず。具体的には、`EditorContainer.tsx` での `onChange` の型定義と `Editor` コンポーネントへの `onChange` 渡し方、`EditorApp.tsx` での `EditorContainer` への `onChange` 渡し方、`useEditorState.ts` での `setOriginalCode` の型定義と実装を変更した。
+- 状況: 現在、`EditorContainer.tsx` で `Editor` コンポーネントに渡す `onChange` は `(value) => onChange(value || '')` であり、`EditorContainer.tsx` の `onChange` の型定義は `(value: string | undefined) => void` である。`EditorApp.tsx` で `EditorContainer` に渡す `onChange` は `(value) => editorActions.setOriginalCode(value ?? '')` であり、`useEditorState.ts` の `setOriginalCode` の型定義は `(code: string | undefined) => void` である。
+- 課題: TypeScriptの型推論が正しく働かない可能性がある。`EditorContainer.tsx` で `Editor` コンポーネントに渡す `onChange` が `undefined` を `''` に変換しているにもかかわらず、`EditorApp.tsx` に渡される `value` が `string | undefined` として扱われている。
+
 
 
