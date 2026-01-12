@@ -263,3 +263,64 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 - トークンリフレッシュが正しく機能すること
 - EditorAppが小さなコンポーネントに分割されていること
 - すべてのテストがパスすること
+
+---
+
+# Phase 1: Restore Environment (chore/restore-env)
+
+## 目標
+`node_modules` が欠落している状態から、開発環境を復旧させる。
+
+## 作業手順
+1. ブランチ `chore/restore-env` 作成
+2. `npm install` 実行
+3. `task check` (または `npm test`) でツールチェーンが動作することを確認（テスト自体の成否は問わない）
+4. 作業ログ記録
+
+## 検証
+- `npm run dev` や `npm test` コマンドが実行可能になること。
+
+---
+
+# Phase 2: Test Infrastructure (chore/test-infrastructure)
+
+## 目標
+テスト環境を整備し、`npm test` がエラーなく実行できるようにする（テスト自体の失敗は許容するが、実行時エラーは解消する）。特に、Chrome API Mock の不足と Monaco Editor の互換性問題を解決する。
+
+## 作業手順
+1. ブランチ `chore/test-infrastructure` 作成
+2. `src/test/setup.ts` の Chrome API Mock を拡充（storage, runtime等）
+3. `src/test/mocks/monaco.tsx` を作成し、Monaco Editor をダミーコンポーネントに置換
+4. `src/test/setup.ts` で Monaco Mock を適用
+5. `npm test` を実行し、実行時エラー（TypeError等）が解消されるか確認
+6. 作業ログ記録
+
+## 検証
+- `npm test` 実行時に "Chrome is not defined" や Monaco 関連のレンダリングエラーが発生しないこと。
+
+---
+
+# Phase 3: Implement Missing Tests (feat/phase3-tests)
+
+## 目標
+`WorkingLog.md` (Phase 1-A) で言及されていた未実装のテストを追加し、プロジェクトの信頼性を担保する。
+
+## 作業手順
+1. ブランチ `feat/phase3-tests` 作成
+2. `src/lib/storage/manager.ts` のテスト実装 (`src/lib/storage/manager.test.ts`)
+   - APIキーの保存・取得・削除
+   - エラーハンドリング
+3. `src/lib/gemini/client.ts` のテスト実装 (`src/lib/gemini/client.test.ts`)
+   - API呼び出しのMock化
+   - レート制限の動作確認
+4. `src/components/DiffViewer.tsx` のテスト実装 (`src/components/DiffViewer.test.tsx`)
+   - Mockコンポーネントがレンダリングされることの確認
+5. `npm test` (または `npx vitest run`) で全テストが通過することを確認
+6. 作業ログ記録
+
+## 検証
+- すべてのテストファイルがパスすること。
+- テストカバレッジが向上していること（オプション）。
+
+
+
