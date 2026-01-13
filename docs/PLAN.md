@@ -1,4 +1,4 @@
-# Step 5 Implementation Plan - GAS Integration (Clasp features)
+# Step 5 Implementation Plan - GAS Integration (Clasp features) [Completed]
 
 ## 目標
 - **FR-002: GASプロジェクト管理**
@@ -41,7 +41,7 @@
 
 ---
 
-# Cleanup Plan (refactor/cleanup-files2)
+# Cleanup Plan (refactor/cleanup-files2) [Completed]
 
 ## 目標
 - プロジェクトルートおよび `docs/` 内の整理を行い、開発に関連の薄くなったドキュメントや一時ファイルを `t/` (temporary) ディレクトリへ退避させる。
@@ -61,7 +61,7 @@
 
 ---
 
-# Taskfile Integration Plan (feat/add-taskfile)
+# Taskfile Integration Plan (feat/add-taskfile) [Completed]
 
 ## 目標
 - 開発ワークフローを統一・効率化するために `go-task` (`Taskfile.yml`) を導入する。
@@ -107,7 +107,7 @@
 
 ---
 
-# Code Review Plan (code-review/src-modules)
+# Code Review Plan (code-review/src-modules) [Completed]
 
 ## 目標
 src/ 以下の機能単位でソースコードレビューを実施し、品質改善提案を行う。
@@ -196,7 +196,7 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 
 ---
 
-# Phase 1-A Implementation Plan (improve/test-coverage)
+# Phase 1-A Implementation Plan (improve/test-coverage) [Completed]
 
 ## 目標
 コードレビューで特定されたHigh Priority課題のうち、テストカバレッジ向上に取り組む。
@@ -226,7 +226,7 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 
 ---
 
-# Phase 1-B Implementation Plan (improve/implementation)
+# Phase 1-B Implementation Plan (improve/implementation) [Completed]
 
 ## 目標
 コードレビューで特定されたHigh Priority課題のうち、実装改善に取り組む。
@@ -272,7 +272,7 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 
 ---
 
-# Phase 1: Restore Environment (chore/restore-env)
+# Phase 1: Restore Environment (chore/restore-env) [Completed]
 
 ## 目標
 `node_modules` が欠落している状態から、開発環境を復旧させる。
@@ -288,7 +288,7 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 
 ---
 
-# Phase 2: Test Infrastructure (chore/test-infrastructure)
+# Phase 2: Test Infrastructure (chore/test-infrastructure) [Completed]
 
 ## 目標
 テスト環境を整備し、`npm test` がエラーなく実行できるようにする（テスト自体の失敗は許容するが、実行時エラーは解消する）。特に、Chrome API Mock の不足と Monaco Editor の互換性問題を解決する。
@@ -306,7 +306,7 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 
 ---
 
-# Phase 3: Implement Missing Tests (feat/phase3-tests)
+# Phase 3: Implement Missing Tests (feat/phase3-tests) [Completed]
 
 ## 目標
 `WorkingLog.md` (Phase 1-A) で言及されていた未実装のテストを追加し、プロジェクトの信頼性を担保する。
@@ -330,7 +330,7 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 
 ---
 
-# Code Review Refactoring Plan (refactor/code-review-20250112)
+# Code Review Refactoring Plan (refactor/code-review-20250112) [Completed]
 
 ## 目標
 2026-01-12に実施したコードレビューで特定された課題に対し、優先度の高い改善項目を実装する。
@@ -420,7 +420,7 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 
 ---
 
-# Test Coverage Improvement Plan (feat/test-coverage-improvement)
+# Test Coverage Improvement Plan (feat/test-coverage-improvement) [Completed]
 
 ## 目標
 PLAN.md の Phase 1-A / Code Review Plan で未実装だったコンポーネントテストを追加し、テストカバレッジを向上させる。
@@ -430,7 +430,7 @@ PLAN.md の Phase 1-A / Code Review Plan で未実装だったコンポーネン
 ### 1. Lint 警告修正
 - **ファイル**: `src/lib/gemini/client.test.ts`
 - **課題**: Biome lint が function expression を arrow function に変更可能と警告
-- **修正**: アロー関数に書き換え
+- **修正**: biome-ignore コメントを追加して constructor の function expression を明示的に許可
 
 ### 2. PromptInput コンポーネントテスト
 - **ファイル**: `src/components/PromptInput.test.tsx` (新規)
@@ -474,4 +474,86 @@ PLAN.md の Phase 1-A / Code Review Plan で未実装だったコンポーネン
 - `task check` が All OK であること
 - 全テスト（既存33件 + 新規テスト）がパスすること
 - Biome lint に警告がないこと
+
+---
+
+# Future Tasks (未実装/検討中の機能)
+
+## 概要
+コア機能はほぼ実装完了。GCP設定、OAuth設定等の本番環境設定は未実施。
+以下は実作業のテスト段階での対応候補。
+
+## 優先度順タスク候補
+
+### 1. テストカバレッジさらなる向上
+**目的**: コア機能のテストカバレッジを100%に近づける
+
+**対象モジュール**:
+- `src/popup/App.tsx` - ポップアップアプリのテスト
+- `src/editor/index.tsx` - エディタメイン画面のテスト
+- `src/hooks/useEditorState.ts` - エディタ状態管理フックのテスト
+- `src/hooks/useGeminiIntegration.ts` - Gemini連携フックのテスト
+- `src/hooks/useProjectOperations.ts` - プロジェクト操作フックのテスト
+
+### 2. 新機能・改善
+
+#### AIチャットインターフェース
+- **現状**: プロンプト入力のみ
+- **改善**: 対話形式のチャットUI拡張
+  - 会話履歴の表示
+  - コンテキスト維持
+  - 複数回のやり取りサポート
+
+#### 差分ビュー機能強化
+- **現状**: 全-or-nothing の適用
+- **改善**: 行ごとの承認/却下
+  - 変更の一部適用
+  - 複数の変更を個別に承認
+
+#### コード履歴機能
+- **目的**: 変更履歴の保存とロールバック
+- **実装**:
+  - ローカルストレージへの履歴保存
+  - タイムスタンプ付き変更記録
+  - 以前のバージョンとの差分表示
+  - ロールバック機能
+
+### 3. 品質・パフォーマンス
+
+#### React.memo 適用
+- **目的**: 不要な再レンダリングの抑制
+- **対象**:
+  - `ProjectHeader`
+  - `EditorContainer`
+  - `DiffViewer`
+  - `PromptInput`
+
+#### コード分割
+- **目的**: 初期ロード時間の短縮
+- **手法**: React.lazy / Suspense
+- **対象**:
+  - Monaco Editor
+  - DiffViewer
+  - AI関連モジュール
+
+#### アクセシビリティ向上
+- **キーボードナビゲーション**: Tabインデックス最適化
+- **ARIA改善**: ラベル、説明の追加
+- **フォーカス管理**: モーダル、ダイアログのフォーカストラップ
+
+### 4. E2E テスト導入
+- **ツール**: Playwright
+- **対象**:
+  - Chrome拡張機能の基本操作
+  - プロジェクトの読み込み/保存フロー
+  - AIコード生成フロー
+
+### 5. ドキュメント・リリース
+- **ユーザーマニュアル**: インストールから使用方法まで
+- **Chrome Web Store 素材**: スクリーンショット、説明文
+- **リリースノート**: バージョンごとの変更点
+
+## 備考
+- GCP設定、OAuth設定等の本番環境設定は未実施
+- 実作業のテスト段階のため、上記機能は検討段階
 
