@@ -418,3 +418,60 @@ src/ 以下の機能単位でソースコードレビューを実施し、品質
 - 全てのテストがパスすること
 - 既存機能に破壊的変更がないこと
 
+---
+
+# Test Coverage Improvement Plan (feat/test-coverage-improvement)
+
+## 目標
+PLAN.md の Phase 1-A / Code Review Plan で未実装だったコンポーネントテストを追加し、テストカバレッジを向上させる。
+
+## 対象モジュール
+
+### 1. Lint 警告修正
+- **ファイル**: `src/lib/gemini/client.test.ts`
+- **課題**: Biome lint が function expression を arrow function に変更可能と警告
+- **修正**: アロー関数に書き換え
+
+### 2. PromptInput コンポーネントテスト
+- **ファイル**: `src/components/PromptInput.test.tsx` (新規)
+- **対象**: `src/components/PromptInput.tsx`
+- **テスト項目**:
+  - 基本的なレンダリング（input, button）
+  - onSubmit コールバックの動作
+  - 空プロンプトでの送信防止
+  - ローディング状態の表示
+  - ボタンの disabled 状態
+  - カスタムプレースホルダー
+  - 送信後の入力クリア
+
+### 3. ProjectHeader コンポーネントテスト
+- **ファイル**: `src/components/ProjectHeader.test.tsx` (新規)
+- **対象**: `src/components/ProjectHeader.tsx`
+- **テスト項目**:
+  - 基本的なレンダリング
+  - Script ID 入力
+  - Load/Save ボタン
+  - ローディング状態
+  - エラー状態
+
+### 4. EditorContainer コンポーネントテスト
+- **ファイル**: `src/components/EditorContainer.test.tsx` (新規)
+- **対象**: `src/components/EditorContainer.tsx`
+- **テスト項目**:
+  - Monaco Mock のレンダリング
+  - onChange コールバック
+  - コード表示
+  - テーマ適用
+
+## 実装手順
+1. Lint 警告を修正
+2. 各コンポーネントのテストファイルを作成
+3. `task check` で品質確認
+4. 全テストがパスすることを確認
+5. docs/WorkingLog.md に作業結果を記録
+
+## 検証
+- `task check` が All OK であること
+- 全テスト（既存33件 + 新規テスト）がパスすること
+- Biome lint に警告がないこと
+

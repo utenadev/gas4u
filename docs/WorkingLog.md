@@ -302,3 +302,65 @@
 2. **可読性**: マジックナンバー/文字列の定数化、ヘルパー関数抽出
 3. **保守性**: 関心の分離、重複削減、型定義の中央集約化
 4. **型安全性**: 適切な型定義、型推論の活用
+
+## 2026-01-13 (続)
+
+### Test Coverage Improvement (feat/test-coverage-improvement)
+
+**目的**: PLAN.md の Phase 1-A / Code Review Plan で未実装だったコンポーネントテストを追加し、テストカバレッジを向上させる。
+
+**実施内容**:
+
+#### 1. Lint 警告修正
+- `src/lib/gemini/client.test.ts`: biome-ignore コメントを追加して constructor の function expression を明示的に許可
+
+#### 2. Monaco Mock 改善
+- `src/test/mocks/monaco.tsx`: Editor コンポーネントに `language`, `theme` プロパティを追加
+- default export を Editor コンポーネントに変更（EditorContainer が default import を使用しているため）
+
+#### 3. テスト追加
+
+**PromptInput コンポーネント** (`src/components/PromptInput.test.tsx`)
+- 基本的なレンダリング（input, button）
+- onSubmit コールバックの動作
+- 空プロンプトでの送信防止
+- ローディング状態の表示
+- ボタンの disabled 状態
+- カスタムプレースホルダー
+- 送信後の入力クリア
+- **10 テスト追加**
+
+**ProjectHeader コンポーネント** (`src/components/ProjectHeader.test.tsx`)
+- 基本的なレンダリング
+- Script ID 入力
+- Load/Save ボタンの有効/無効状態
+- ローディング状態の表示
+- ボタンクリック時のコールバック動作
+- **12 テスト追加**
+
+**EditorContainer コンポーネント** (`src/components/EditorContainer.test.tsx`)
+- Monaco Mock のレンダリング
+- コード値の表示
+- 言語・テーマの適用
+- 空コード・マルチラインコードの処理
+- **9 テスト追加**
+
+#### 4. パッケージ追加
+- `@testing-library/user-event` をインストール（ユーザー操作シミュレーション用）
+
+#### 検証結果
+
+- ✅ 全64テストパス（既存33件 + 新規31件）
+- ✅ TypeScript コンパイル成功
+- ✅ Biome Lint パス
+- ✅ プロダクションビルド成功
+
+#### テストカバレッジ向上
+
+| コンポーネント | テスト数 | カバレッジ |
+|--------------|---------|-----------|
+| PromptInput | 10 | 新規 |
+| ProjectHeader | 12 | 新規 |
+| EditorContainer | 9 | 新規 |
+| DiffViewer | 2 | 既存 |
+| 合計 | 33 | コンポーネント完全カバー |
