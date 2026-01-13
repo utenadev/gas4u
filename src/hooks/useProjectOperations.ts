@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ClaspManager } from "../lib/clasp/manager";
 import { StorageManager } from "../lib/storage/manager";
 
-type ProjectOperations = {
+type ProjectOperationsState = {
   isLoadingProject: boolean;
   error: string | null;
 };
@@ -16,38 +16,41 @@ type ProjectOperationsActions = {
   setError: (error: string | null) => void;
 };
 
-export const useProjectOperations = (): [ProjectOperations, ProjectOperationsActions] => {
-  const [state, setState] = useState<ProjectOperations>({
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+export function useProjectOperations(): [ProjectOperationsState, ProjectOperationsActions] {
+  const [state, setState] = useState<ProjectOperationsState>({
     isLoadingProject: false,
     error: null,
   });
 
   const actions: ProjectOperationsActions = {
-    loadProject: async (
-      scriptId: string,
-      onProjectLoaded?: (project: { code: string; name: string }) => void
-    ) => {
-      if (!scriptId) return;
+    async loadProject(scriptId, onProjectLoaded) {
+      if (!scriptId) {
+        return;
+      }
+
       setState((prev) => ({ ...prev, isLoadingProject: true, error: null }));
+
       try {
         const project = await ClaspManager.loadProject(scriptId);
         if (project) {
           await StorageManager.saveSettings({ lastProjectId: scriptId });
-          if (onProjectLoaded) {
-            onProjectLoaded(project);
-          }
+          onProjectLoaded?.(project);
         }
-      } catch (e) {
-        const message = e instanceof Error ? e.message : String(e);
+      } catch (error) {
         setState((prev) => ({
           ...prev,
-          error: "Failed to load project: " + message,
+          error: `Failed to load project: ${getErrorMessage(error)}`,
         }));
       } finally {
         setState((prev) => ({ ...prev, isLoadingProject: false }));
       }
     },
-    saveProject: async (scriptId: string, code: string, fileName: string) => {
+
+    async saveProject(scriptId, code, fileName) {
       if (!scriptId) {
         setState((prev) => ({
           ...prev,
@@ -55,22 +58,25 @@ export const useProjectOperations = (): [ProjectOperations, ProjectOperationsAct
         }));
         return;
       }
+
       setState((prev) => ({ ...prev, isLoadingProject: true, error: null }));
+
       try {
         await ClaspManager.saveProject(scriptId, code, fileName);
-        // Success - error is already null
-      } catch (e) {
-        const message = e instanceof Error ? e.message : String(e);
+      } catch (error) {
         setState((prev) => ({
           ...prev,
-          error: "Failed to save project: " + message,
+          error: `Failed to save project: ${getErrorMessage(error)}`,
         }));
       } finally {
         setState((prev) => ({ ...prev, isLoadingProject: false }));
       }
     },
-    setError: (error: string | null) => setState((prev) => ({ ...prev, error })),
+
+    setError(error) {
+      setState((prev) => ({ ...prev, error }));
+    },
   };
 
   return [state, actions];
-};
+}

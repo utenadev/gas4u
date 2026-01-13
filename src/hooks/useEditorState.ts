@@ -14,7 +14,7 @@ type EditorStateActions = {
   setError: (error: string | null) => void;
 };
 
-export const useEditorState = (initialCode: string): [EditorState, EditorStateActions] => {
+export function useEditorState(initialCode: string): [EditorState, EditorStateActions] {
   const [state, setState] = useState<EditorState>({
     originalCode: initialCode,
     modifiedCode: "",
@@ -23,14 +23,19 @@ export const useEditorState = (initialCode: string): [EditorState, EditorStateAc
   });
 
   const actions: EditorStateActions = {
-    setOriginalCode: (code: string) => {
+    setOriginalCode: (code) => {
       setState((prev) => ({ ...prev, originalCode: code }));
     },
-    setModifiedCode: (code: string) => setState((prev) => ({ ...prev, modifiedCode: code })),
-    setIsGenerating: (generating: boolean) =>
-      setState((prev) => ({ ...prev, isGenerating: generating })),
-    setError: (error: string | null) => setState((prev) => ({ ...prev, error })),
+    setModifiedCode: (code) => {
+      setState((prev) => ({ ...prev, modifiedCode: code }));
+    },
+    setIsGenerating: (generating) => {
+      setState((prev) => ({ ...prev, isGenerating: generating }));
+    },
+    setError: (error) => {
+      setState((prev) => ({ ...prev, error }));
+    },
   };
 
   return [state, actions];
-};
+}

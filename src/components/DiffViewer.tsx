@@ -1,17 +1,17 @@
 import { DiffEditor } from "@monaco-editor/react";
-import type { FC } from "react";
+import type React from "react";
 
-interface DiffViewerProps {
+type DiffViewerProps = {
   original: string;
   modified: string;
   language?: string;
-}
+};
 
-export const DiffViewer: FC<DiffViewerProps> = ({
+export function DiffViewer({
   original,
   modified,
   language = "javascript",
-}) => {
+}: DiffViewerProps): React.ReactElement {
   return (
     <div className="h-full w-full">
       <DiffEditor
@@ -31,4 +31,4 @@ export const DiffViewer: FC<DiffViewerProps> = ({
       />
     </div>
   );
-};
+}

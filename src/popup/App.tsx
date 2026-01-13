@@ -1,33 +1,81 @@
 import { useEffect, useState } from "react";
 import { StorageManager } from "../lib/storage/manager";
 
-export const App = () => {
-  const [apiKey, setApiKey] = useState("");
-  const [status, setStatus] = useState<string>("");
+type StatusMessage = {
+  message: string;
+  type: "success" | "error";
+};
 
-  useEffect(() => {
-    StorageManager.getApiKey().then((key) => {
-      if (key) setApiKey(key);
-    });
+const STATUS_CLEAR_DELAY = 2000;
+
+export function App(): JSX.Element {
+  const [apiKey, setApiKey] = useState("");
+  const [status, setStatus] = useState<StatusMessage | null>(null);
+
+  useEffect(function loadApiKey() {
+    async function fetchApiKey() {
+      const key = await StorageManager.getApiKey();
+      if (key) {
+        setApiKey(key);
+      }
+    }
+    fetchApiKey();
   }, []);
 
-  // Clear status message after 2 seconds
-  useEffect(() => {
-    if (status) {
-      const timer = setTimeout(() => setStatus(""), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [status]);
+  useEffect(
+    function clearStatusAfterDelay() {
+      if (status) {
+        const timer = setTimeout(() => setStatus(null), STATUS_CLEAR_DELAY);
+        return function cleanup() {
+          clearTimeout(timer);
+        };
+      }
+    },
+    [status]
+  );
 
-  const handleSave = async () => {
+  async function handleSave() {
     try {
       await StorageManager.setApiKey(apiKey);
-      setStatus("Saved successfully!");
+      setStatus({ message: "Saved successfully!", type: "success" });
     } catch (error) {
       console.error(error);
-      setStatus("Error saving settings.");
+      setStatus({ message: "Error saving settings.", type: "error" });
     }
-  };
+  }
+
+  function getStatusStyles() {
+    if (!status) return "";
+    return status.type === "error"
+      ? "bg-red-50 text-red-600 border border-red-100"
+      : "bg-green-50 text-green-600 border border-green-100";
+  }
+
+  function getStatusIcon() {
+    if (!status) return null;
+    if (status.type === "error") {
+      return (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      );
+    }
+    return (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    );
+  }
 
   return (
     <div className="w-80 p-5 flex flex-col gap-5 bg-slate-50 h-full font-sans">
@@ -41,39 +89,22 @@ export const App = () => {
         </div>
       </header>
 
-      			<div className="flex flex-col gap-1.5">
-
-      				<label
-
-      					htmlFor="apiKey"
-
-      					className="text-xs font-semibold text-slate-500 uppercase tracking-wider"
-
-      				>
-
-      					Gemini API Key
-
-      				</label>
-
-      				<div className="relative">
-
-      					<input
-
-      						id="apiKey"
-
-      						type="password"
-
-      						className="w-full pl-3 pr-8 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm text-sm"
-
-      						value={apiKey}
-
-      						onChange={(e) => setApiKey(e.target.value)}
-
-      						placeholder="Paste your API Key here"
-
-      					/>
-
-      
+      <div className="flex flex-col gap-1.5">
+        <label
+          htmlFor="apiKey"
+          className="text-xs font-semibold text-slate-500 uppercase tracking-wider"
+        >
+          Gemini API Key
+        </label>
+        <div className="relative">
+          <input
+            id="apiKey"
+            type="password"
+            className="w-full pl-3 pr-8 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm text-sm"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            placeholder="Paste your API Key here"
+          />
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -111,28 +142,10 @@ export const App = () => {
 
       {status && (
         <div
-          className={`text-xs font-medium text-center p-2.5 rounded-lg flex items-center justify-center gap-2 animate-fade-in ${status.includes("Error") ? "bg-red-50 text-red-600 border border-red-100" : "bg-green-50 text-green-600 border border-green-100"}`}
+          className={`text-xs font-medium text-center p-2.5 rounded-lg flex items-center justify-center gap-2 animate-fade-in ${getStatusStyles()}`}
         >
-          {status.includes("Error") ? (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          ) : (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          )}
-          {status}
+          {getStatusIcon()}
+          {status.message}
         </div>
       )}
 
@@ -142,4 +155,4 @@ export const App = () => {
       </footer>
     </div>
   );
-};
+}

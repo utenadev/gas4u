@@ -8,12 +8,16 @@ type EditorContainerProps = {
   theme?: string;
 };
 
-export const EditorContainer: React.FC<EditorContainerProps> = ({
+export function EditorContainer({
   code,
   onChange,
   language = "javascript",
   theme = "light",
-}) => {
+}: EditorContainerProps): React.ReactElement {
+  const handleChange = (value: string | undefined): void => {
+    onChange(value ?? "");
+  };
+
   return (
     <div className="h-full w-full">
       <Editor
@@ -21,7 +25,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
         defaultLanguage={language}
         language={language}
         value={code}
-        onChange={(value) => onChange(value || "")}
+        onChange={handleChange}
         theme={theme}
         options={{
           minimap: { enabled: false },
@@ -32,4 +36,4 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
       />
     </div>
   );
-};
+}

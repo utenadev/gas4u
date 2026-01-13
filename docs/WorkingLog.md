@@ -190,3 +190,115 @@
 - エラーハンドリングの一貫性向上
 - コード重複の削減（Spinnerコンポーネント）
 - 型安全性の向上
+
+## 2026-01-13
+
+### Code Simplifier Refactoring (全ディレクトリ対象)
+
+**ツール**: code-simplifier エージェント
+**目的**: コードの簡素化、可読性向上、保守性改善
+
+#### 実施対象と改善内容
+
+**1. src/background** (agentId: ae940e9)
+- `if-else` チェーンを `switch` 文に置き換え
+- `chrome.runtime.OnInstalledReason` 型注釈を追加
+- イベントログ処理を別関数として抽出
+
+**2. src/lib/gemini** (agentId: a9ab54d)
+- マジックナンバーを定数化（`DEFAULT_MODEL_NAME`, `REQUEST_COOLDOWN_MS`）
+- ヘルパー関数を抽出:
+  - `extractErrorMessage()` - エラーメッセージ抽出
+  - `cleanMarkdownCodeBlocks()` - Markdownクリーニング
+  - `buildGenerateCodePrompt()` - コード生成用プロンプト構築
+  - `buildExplainCodePrompt()` - コード説明用プロンプト構築
+  - `delay()` - 遅延処理
+- 変数名改善（`requestQueue` → `generateCodeQueue` など）
+- 冗長な `GeminiClientMethods` インターフェースを削除
+
+**3. src/lib/clasp** (agentId: a6e5cc8)
+- `api.ts`:
+  - 定数抽出（`MAX_RETRIES`, `RETRY_DELAY_MS`, `BASE_URL`）
+  - リトライロジックを `request()` と `requestWithRetry()` に分離
+  - `data.files || []` → `data.files ?? []` に変更
+- `manager.ts`:
+  - ヘルパー関数抽出（`findMainScriptFile()`, `findOrCreateFile()`）
+  - 定数抽出（`DEFAULT_FILE_NAME`, `FILE_TYPE`）
+  - 不要な try/catch ブロックを削除
+  - 不変性向上（spread operator 使用）
+
+**4. src/lib/storage** (agentId: ac8ae33)
+- `types.ts`: `STORAGE_KEYS.SETTINGS` オブジェクトを `STORAGE_KEY` 定数に簡素化
+- `manager.ts`: `getSettingsFromStorage()` ヘルパー関数を抽出
+- 重複コメントを削除
+
+**5. src/components** (agentId: a51848e)
+- アロー関数から関数宣言へ変更（`React.FC` 廃止）
+- `DiffViewer.tsx`: コンポーネント構造簡素化
+- `EditorContainer.tsx`: `handleChange` 関数を抽出
+- `Spinner.tsx`: `SIZE_CLASSES` 定数抽出
+- `PromptInput.tsx`:
+  - `LIGHTNING_ICON` 定数抽出
+  - `getInputClassName()`, `getButtonClassName()` ヘルパー関数作成
+- `ProjectHeader.tsx`:
+  - `LoadButton`, `SaveButton` コンポーネント抽出
+  - `hasScriptId` 変数導入
+
+**6. src/editor** (agentId: a264c84)
+- `index.tsx`:
+  - サブコンポーネント抽出（`ApiKeyMissingMessage`, `DiffActionButtons`, `ErrorDisplay`）
+  - `DEFAULT_CODE` 定数抽出
+  - 関数宣言化
+- `useEditorState.ts`:
+  - アロー関数から関数宣言へ変更
+- `useGeminiIntegration.ts`:
+  - 型名改善（`GeminiIntegration` → `GeminiIntegrationState`）
+  - `GenerateCodeResult` 型抽出
+- `useProjectOperations.ts`:
+  - 型名改善（`ProjectOperations` → `ProjectOperationsState`）
+  - エラーハンドリング改善（オプショナルチェーン使用）
+
+**7. src/popup** (agentId: a587e66)
+- `App.tsx`:
+  - `StatusMessage` 型導入
+  - `STATUS_CLEAR_DELAY` 定数抽出
+  - `getStatusStyles()`, `getStatusIcon()` ヘルパー関数作成
+  - 関数宣言化
+- `index.tsx`:
+  - 非 null アサーション削除、適切な null チェックに変更
+  - `renderApp()` 関数抽出
+
+**8. src/hooks** (agentId: ac9d546)
+- `useEditorState.ts`: 冗長な型アノテーション削除（TypeScript 推論に依存）
+- `useGeminiIntegration.ts`:
+  - `GenerateCodeResult` 型エイリアス削除（インライン化）
+  - 冗長な型アノテーション削除
+- `useProjectOperations.ts`:
+  - `getErrorMessage()` ヘルパー関数抽出
+  - エラーハンドリング重複削除
+
+**9. src/types** (agentId: a12c33c)
+- 型定義を中央集約化（`src/types/index.ts` に統合）
+- 各ドメイン別に整理:
+  - Application Settings Types
+  - Storage Constants
+  - Google Apps Script Types
+  - Chrome Extension API Types
+  - Gemini AI Types
+- 型エイリアス導入（`Theme`, `GASFileType`, `GeminiResponse`）
+- 既存ファイルは再エクスポートのみに変更（後方互換性維持）
+
+#### 検証結果
+
+- ✅ 全33テストパス
+- ✅ TypeScript コンパイル成功
+- ✅ Biome Lint パス
+- ✅ プロダクションビルド成功
+- ✅ 機能変更なし（100% 後方互換）
+
+#### 全体的な改善点
+
+1. **一貫性**: 関数宣言、命名規則、フォーマットの統一
+2. **可読性**: マジックナンバー/文字列の定数化、ヘルパー関数抽出
+3. **保守性**: 関心の分離、重複削減、型定義の中央集約化
+4. **型安全性**: 適切な型定義、型推論の活用

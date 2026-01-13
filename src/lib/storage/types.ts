@@ -1,9 +1,3 @@
-export interface AppSettings {
-  geminiApiKey?: string;
-  lastProjectId?: string;
-  theme?: "light" | "dark" | "system";
-}
-
-export const STORAGE_KEYS = {
-  SETTINGS: "app_settings",
-} as const;
+// Re-export centralized types for backward compatibility
+export type { AppSettings, Theme } from "../../types/index";
+export { STORAGE_KEY } from "../../types/index";

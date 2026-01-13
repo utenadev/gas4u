@@ -1,84 +1,107 @@
-import { type GenerativeModel, GoogleGenerativeAI } from "@google/generative-ai";
+import type { GenerativeModel } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { ExplainCodeResponse, GeminiClientConfig, GenerateCodeResponse } from "./types";
 
+const DEFAULT_MODEL_NAME = "gemini-2.0-flash-exp";
+const REQUEST_COOLDOWN_MS = 1000;
+
+function extractErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return "Unknown error occurred";
+}
+
+function cleanMarkdownCodeBlocks(code: string): string {
+  let cleaned = code.replace(/^```(?:javascript|js|typescript|ts)?\n?/gm, "");
+  cleaned = cleaned.replace(/```\n?$/gm, "");
+  return cleaned.trim();
+}
+
+function buildGenerateCodePrompt(userPrompt: string, currentCode?: string): string {
+  const systemPrompt =
+    "You are a Google Apps Script code generator.\n" +
+    "Generate ONLY the requested Google Apps Script code without any explanations, comments, or markdown formatting.\n" +
+    "Do not include ```javascript or any other markdown code blocks.\n" +
+    "Return only the pure JavaScript/Google Apps Script code.";
+
+  let fullPrompt = systemPrompt;
+
+  if (currentCode) {
+    fullPrompt +=
+      "\n\nThe following is the current code in the editor:\n" +
+      "```javascript\n" +
+      `${currentCode}\n` +
+      "```\n\n" +
+      "Please modify this code according to the user's request. Return the COMPLETE updated code, not just the changes.";
+  }
+
+  fullPrompt += `\n\nUser request: ${userPrompt}`;
+  return fullPrompt;
+}
+
+function buildExplainCodePrompt(code: string): string {
+  return `Please explain the following Google Apps Script code:\n\n\`\`\`javascript\n${code}\n\`\`\``;
+}
+
+async function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export class GeminiClient {
-  private genAI: GoogleGenerativeAI;
   private model: GenerativeModel;
-  private requestQueue: Promise<GenerateCodeResponse> = Promise.resolve({
-    code: "",
-    error: undefined,
-  });
-  private explainQueue: Promise<ExplainCodeResponse> = Promise.resolve({
-    explanation: "",
-    error: undefined,
-  });
-  private readonly REQUEST_COOLDOWN_MS = 1000;
+  private generateCodeQueue = Promise.resolve<GenerateCodeResponse>({ code: "" });
+  private explainCodeQueue = Promise.resolve<ExplainCodeResponse>({ explanation: "" });
 
   constructor(config: GeminiClientConfig) {
-    this.genAI = new GoogleGenerativeAI(config.apiKey);
-    this.model = this.genAI.getGenerativeModel({
-      model: config.modelName || "gemini-2.0-flash-exp",
+    const genAI = new GoogleGenerativeAI(config.apiKey);
+    this.model = genAI.getGenerativeModel({
+      model: config.modelName || DEFAULT_MODEL_NAME,
     });
   }
 
   async generateCode(prompt: string, currentCode?: string): Promise<GenerateCodeResponse> {
-    const systemPrompt = `You are a Google Apps Script code generator.
-Generate ONLY the requested Google Apps Script code without any explanations, comments, or markdown formatting.
-Do not include \`\`\`javascript or any other markdown code blocks.
-Return only the pure JavaScript/Google Apps Script code.`;
+    const fullPrompt = buildGenerateCodePrompt(prompt, currentCode);
 
-    let fullPrompt = systemPrompt;
-
-    if (currentCode) {
-      fullPrompt += `\n\nThe following is the current code in the editor:
-\`\`\`javascript
-${currentCode}
-\`\`\`
-
-Please modify this code according to the user's request. Return the COMPLETE updated code, not just the changes.`;
-    }
-
-    fullPrompt += `\n\nUser request: ${prompt}`;
-
-    this.requestQueue = this.requestQueue.then(async () => {
+    this.generateCodeQueue = this.generateCodeQueue.then(async () => {
       try {
         const result = await this.model.generateContent(fullPrompt);
         const response = await result.response;
-        let code = response.text();
+        const rawCode = response.text();
+        const code = cleanMarkdownCodeBlocks(rawCode);
 
-        code = code.replace(/^```(?:javascript|js|typescript|ts)?\n?/gm, "");
-        code = code.replace(/```\n?$/gm, "");
-
-        return { code: code.trim() };
+        return { code };
       } catch (error) {
         console.error("Error generating code:", error);
-        const message = error instanceof Error ? error.message : "Unknown error occurred";
-        return { code: "", error: message };
+        const errorMessage = extractErrorMessage(error);
+        return { code: "", error: errorMessage };
       } finally {
-        await new Promise((resolve) => setTimeout(resolve, this.REQUEST_COOLDOWN_MS));
+        await delay(REQUEST_COOLDOWN_MS);
       }
     });
 
-    return this.requestQueue;
+    return this.generateCodeQueue;
   }
 
   async explainCode(code: string): Promise<ExplainCodeResponse> {
-    const prompt = `Please explain the following Google Apps Script code:\n\n\`\`\`javascript\n${code}\n\`\`\``;
+    const prompt = buildExplainCodePrompt(code);
 
-    this.explainQueue = this.explainQueue.then(async () => {
+    this.explainCodeQueue = this.explainCodeQueue.then(async () => {
       try {
         const result = await this.model.generateContent(prompt);
         const response = await result.response;
-        return { explanation: response.text() };
+        const explanation = response.text();
+
+        return { explanation };
       } catch (error) {
         console.error("Error explaining code:", error);
-        const message = error instanceof Error ? error.message : "Unknown error occurred";
-        return { explanation: "", error: message };
+        const errorMessage = extractErrorMessage(error);
+        return { explanation: "", error: errorMessage };
       } finally {
-        await new Promise((resolve) => setTimeout(resolve, this.REQUEST_COOLDOWN_MS));
+        await delay(REQUEST_COOLDOWN_MS);
       }
     });
 
-    return this.explainQueue;
+    return this.explainCodeQueue;
   }
 }

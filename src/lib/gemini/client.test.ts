@@ -1,17 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { GeminiClient } from "./client";
 
+const MOCK_API_KEY = "test-api-key";
+const REQUEST_COOLDOWN_MS = 1000;
+
 const mocks = vi.hoisted(() => {
   const generateContent = vi.fn();
   const getGenerativeModel = vi.fn(() => ({
-    generateContent: generateContent,
+    generateContent,
   }));
-  // Use a standard function to allow 'new' usage
-  const GoogleGenerativeAI = vi.fn(function (this: any) {
+
+  const GoogleGenerativeAI = vi.fn(function () {
     return {
-      getGenerativeModel: getGenerativeModel,
+      getGenerativeModel,
     };
   });
+
   return {
     generateContent,
     getGenerativeModel,
@@ -19,105 +23,154 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-vi.mock("@google/generative-ai", () => {
-  return {
-    GoogleGenerativeAI: mocks.GoogleGenerativeAI,
-  };
-});
+vi.mock("@google/generative-ai", () => ({
+  GoogleGenerativeAI: mocks.GoogleGenerativeAI,
+}));
 
 describe("GeminiClient", () => {
   let client: GeminiClient;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    client = new GeminiClient({ apiKey: "test-api-key" });
+    client = new GeminiClient({ apiKey: MOCK_API_KEY });
   });
 
   describe("generateCode", () => {
     it("should generate code successfully", async () => {
+      const expectedCode = "function test() { return true; }";
       mocks.generateContent.mockResolvedValue({
         response: {
-          text: () => "function test() { return true; }",
+          text: () => expectedCode,
         },
       });
 
       const result = await client.generateCode("Create a test function");
-      expect(result.code).toBe("function test() { return true; }");
+
+      expect(result.code).toBe(expectedCode);
       expect(result.error).toBeUndefined();
     });
 
     it("should clean up markdown code blocks", async () => {
+      const rawCode = "```javascript\nfunction test() {}\n```";
+      const expectedCode = "function test() {}";
       mocks.generateContent.mockResolvedValue({
         response: {
-          text: () => "```javascript\nfunction test() {}\n```",
+          text: () => rawCode,
         },
       });
 
       const result = await client.generateCode("Create a test function");
-      expect(result.code).toBe("function test() {}");
+
+      expect(result.code).toBe(expectedCode);
+      expect(result.error).toBeUndefined();
     });
 
     it("should handle errors gracefully", async () => {
-      mocks.generateContent.mockRejectedValue(new Error("API Error"));
+      const errorMessage = "API Error";
+      mocks.generateContent.mockRejectedValue(new Error(errorMessage));
 
       const result = await client.generateCode("Create a test function");
+
       expect(result.code).toBe("");
-      expect(result.error).toBe("API Error");
+      expect(result.error).toBe(errorMessage);
     });
 
-    // Rate limit testing
-    it("should queue requests (rate limiting)", async () => {
+    it("should include current code in prompt when provided", async () => {
+      const currentCode = "function old() {}";
+      const prompt = "Update the function";
       mocks.generateContent.mockResolvedValue({
-        response: { text: () => "code" },
+        response: {
+          text: () => "function new() {}",
+        },
       });
 
-      const start = Date.now();
-      const p1 = client.generateCode("req1");
-      const p2 = client.generateCode("req2");
+      await client.generateCode(prompt, currentCode);
 
-      await Promise.all([p1, p2]);
-      const duration = Date.now() - start;
+      const callArgs = mocks.generateContent.mock.calls[0][0];
+      expect(callArgs).toContain(currentCode);
+      expect(callArgs).toContain(prompt);
+    });
 
-      // Should take at least 1000ms (COOLDOWN) due to sequential execution
-      expect(duration).toBeGreaterThanOrEqual(1000);
+    it("should queue requests with rate limiting", async () => {
+      mocks.generateContent.mockResolvedValue({
+        response: {
+          text: () => "code",
+        },
+      });
+
+      const startTime = Date.now();
+      const promise1 = client.generateCode("req1");
+      const promise2 = client.generateCode("req2");
+
+      await Promise.all([promise1, promise2]);
+      const duration = Date.now() - startTime;
+
+      expect(duration).toBeGreaterThanOrEqual(REQUEST_COOLDOWN_MS);
     });
   });
 
   describe("explainCode", () => {
     it("should explain code successfully", async () => {
+      const expectedExplanation = "This code does X.";
       mocks.generateContent.mockResolvedValue({
         response: {
-          text: () => "This code does X.",
+          text: () => expectedExplanation,
         },
       });
 
       const result = await client.explainCode("function x() {}");
-      expect(result.explanation).toBe("This code does X.");
+
+      expect(result.explanation).toBe(expectedExplanation);
+      expect(result.error).toBeUndefined();
     });
 
     it("should handle errors gracefully", async () => {
-      mocks.generateContent.mockRejectedValue(new Error("API Error"));
+      const errorMessage = "API Error";
+      mocks.generateContent.mockRejectedValue(new Error(errorMessage));
 
       const result = await client.explainCode("function x() {}");
+
       expect(result.explanation).toBe("");
-      expect(result.error).toBe("API Error");
+      expect(result.error).toBe(errorMessage);
     });
 
-    // Rate limit testing
-    it("should queue requests (rate limiting)", async () => {
+    it("should queue requests with rate limiting", async () => {
       mocks.generateContent.mockResolvedValue({
-        response: { text: () => "explanation" },
+        response: {
+          text: () => "explanation",
+        },
       });
 
-      const start = Date.now();
-      const p1 = client.explainCode("code1");
-      const p2 = client.explainCode("code2");
+      const startTime = Date.now();
+      const promise1 = client.explainCode("code1");
+      const promise2 = client.explainCode("code2");
 
-      await Promise.all([p1, p2]);
-      const duration = Date.now() - start;
+      await Promise.all([promise1, promise2]);
+      const duration = Date.now() - startTime;
 
-      // Should take at least 1000ms (COOLDOWN) due to sequential execution
-      expect(duration).toBeGreaterThanOrEqual(1000);
+      expect(duration).toBeGreaterThanOrEqual(REQUEST_COOLDOWN_MS);
+    });
+  });
+
+  describe("constructor", () => {
+    it("should use default model when not specified", () => {
+      void new GeminiClient({ apiKey: MOCK_API_KEY });
+
+      expect(mocks.getGenerativeModel).toHaveBeenCalledWith({
+        model: "gemini-2.0-flash-exp",
+      });
+    });
+
+    it("should use custom model when specified", () => {
+      const customModel = "gemini-pro";
+      void new GeminiClient({
+        apiKey: MOCK_API_KEY,
+        modelName: customModel,
+      });
+
+      expect(mocks.getGenerativeModel).toHaveBeenCalledWith({
+        model: customModel,
+      });
     });
   });
 });

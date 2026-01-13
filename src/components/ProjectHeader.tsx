@@ -10,14 +10,79 @@ type ProjectHeaderProps = {
   currentFileName: string;
 };
 
-export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
+const UPLOAD_ICON = (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+    />
+  </svg>
+);
+
+function LoadButton({
+  isLoading,
+  hasScriptId,
+  onClick,
+}: {
+  isLoading: boolean;
+  hasScriptId: boolean;
+  onClick: () => void;
+}): React.ReactElement {
+  const isDisabled = isLoading || !hasScriptId;
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={isDisabled}
+      className="px-4 py-1.5 bg-white hover:bg-slate-50 rounded-md text-sm font-medium text-slate-700 shadow-sm border border-slate-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {isLoading ? (
+        <span className="flex items-center gap-2">
+          <Spinner />
+          Loading
+        </span>
+      ) : (
+        "Load"
+      )}
+    </button>
+  );
+}
+
+function SaveButton({
+  isLoading,
+  hasScriptId,
+  onClick,
+}: {
+  isLoading: boolean;
+  hasScriptId: boolean;
+  onClick: () => void;
+}): React.ReactElement {
+  const isDisabled = isLoading || !hasScriptId;
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={isDisabled}
+      className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white shadow-sm shadow-blue-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {UPLOAD_ICON}
+      Save to GAS
+    </button>
+  );
+}
+
+export function ProjectHeader({
   scriptId,
   setScriptId,
   onLoadProject,
   onSaveProject,
   isLoadingProject,
   currentFileName,
-}) => {
+}: ProjectHeaderProps): React.ReactElement {
+  const hasScriptId = Boolean(scriptId);
+
   return (
     <div className="bg-white border-b border-slate-200 px-6 py-3 flex gap-4 items-center shadow-sm z-20">
       <div className="flex items-center gap-3 flex-1">
@@ -38,39 +103,16 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           value={scriptId}
           onChange={(e) => setScriptId(e.target.value)}
         />
-        <button
+        <LoadButton
+          isLoading={isLoadingProject}
+          hasScriptId={hasScriptId}
           onClick={onLoadProject}
-          disabled={isLoadingProject || !scriptId}
-          className="px-4 py-1.5 bg-white hover:bg-slate-50 rounded-md text-sm font-medium text-slate-700 shadow-sm border border-slate-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isLoadingProject ? (
-            <span className="flex items-center gap-2">
-              <Spinner />
-              Loading
-            </span>
-          ) : (
-            "Load"
-          )}
-        </button>
+        />
       </div>
 
-      <div className="border-l border-slate-200 h-8 mx-2"></div>
+      <div className="border-l border-slate-200 h-8 mx-2" />
 
-      <button
-        onClick={onSaveProject}
-        disabled={isLoadingProject || !scriptId}
-        className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white shadow-sm shadow-blue-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-          />
-        </svg>
-        Save to GAS
-      </button>
+      <SaveButton isLoading={isLoadingProject} hasScriptId={hasScriptId} onClick={onSaveProject} />
     </div>
   );
-};
+}
