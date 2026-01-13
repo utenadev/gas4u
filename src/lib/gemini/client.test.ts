@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => {
     generateContent,
   }));
 
+  // biome-ignore lint/complexity/useArrowFunction: Constructor requires function expression
   const GoogleGenerativeAI = vi.fn(function () {
     return {
       getGenerativeModel,

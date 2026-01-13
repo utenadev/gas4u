@@ -8,8 +8,22 @@ export const DiffEditor = ({ original, modified }: { original: string; modified:
 );
 
 // Mock Editor
-export const Editor = ({ value, defaultValue }: { value?: string; defaultValue?: string }) => (
-  <textarea data-testid="mock-editor" value={value} defaultValue={defaultValue} readOnly />
+export const Editor = ({
+  value,
+  defaultValue,
+  language,
+  theme,
+}: {
+  value?: string;
+  defaultValue?: string;
+  language?: string;
+  theme?: string;
+}) => (
+  <div data-testid="mock-monaco-editor">
+    <div data-testid="editor-value">{value ?? defaultValue ?? ""}</div>
+    <div data-testid="editor-language">{language ?? "javascript"}</div>
+    <div data-testid="editor-theme">{theme ?? "light"}</div>
+  </div>
 );
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -17,11 +31,5 @@ export const useMonaco = () => null;
 // eslint-disable-next-line react-refresh/only-export-components
 export const loader = { config: () => {} };
 
-const MonacoEditor = {
-  DiffEditor,
-  Editor,
-  useMonaco,
-  loader,
-};
-
-export default MonacoEditor;
+// Default export for Editor (used by EditorContainer)
+export default Editor;
